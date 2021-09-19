@@ -14,7 +14,7 @@
 Application *application = nullptr;
 
 int main() {
-    application = new Application("Data Structures Manager", true);
-    application->start();
+    application = new Application(true);
+    application->init();
     return 0;
 }

@@ -27,30 +27,29 @@
 
 using namespace std;
 
-class Application : public iStart {
+class Application {
 private:
-    string name;
+    const string name = "Data Structures & Algorithms";
     const string author = "Ian García";
     bool debug;
-    float version;
+    float version = 0.1;
     unsigned int startTime = 0;
     unsigned int finishTime = 0;
     vector<Module *> modules;
-    vector<Module *> getModules();
 
     Utils *utils = nullptr;
     Time *time = nullptr;
 
 public:
-    Application(string name, bool debug);
+    Application(bool);
 
     ~Application();
 
-    void start() override;
+    void init();
 
-    void end() override;
+    void end();
 
-    bool isDebug() const;
+    bool isDebug();
 
     Application *getApplication();
 
@@ -71,6 +70,7 @@ public:
     void addModule(Module *);
 
     Utils *getUtilsHandler();
+
     Time *getTimeHandler();
 };
 

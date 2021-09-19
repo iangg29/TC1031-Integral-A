@@ -11,18 +11,16 @@
 //
 #include "Application.h"
 
-Application::Application(string name, bool debug) {
-    this->name = name;
+Application::Application(bool debug) {
     this->debug = debug;
-    this->version = 0.1;
 }
 
 Application::~Application() {
-    delete getUtilsHandler();
-    delete getTimeHandler();
+    delete this->utils;
+    delete this->time;
 };
 
-void Application::start() {
+void Application::init() {
     this->startTime = getTimeHandler()->getMillis();
     this->utils = new Utils(this);
     this->time = new Time(this);
@@ -31,18 +29,14 @@ void Application::start() {
 }
 
 void Application::end() {
-    for (Module *module: getModules()) {
+    for (Module *module: modules) {
         module->end();
     }
 }
 
 
-vector<Module *> Application::getModules() {
-    return this->modules;
-}
-
 void Application::addModule(Module *module) {
-    getModules().push_back(module);
+    modules.push_back(module);
 }
 
 Application *Application::getApplication() {
@@ -53,7 +47,7 @@ const Application *Application::getApplication() const {
     return this;
 }
 
-bool Application::isDebug() const {
+bool Application::isDebug() {
     return this->debug;
 }
 
@@ -88,6 +82,5 @@ Utils *Application::getUtilsHandler() {
 Time *Application::getTimeHandler() {
     return this->time;
 }
-
 
 
