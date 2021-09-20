@@ -41,7 +41,7 @@ protected:
 public:
     Module(Application *application, string name);
 
-    virtual void start();
+    virtual void start() = 0;
 
     virtual void end() = 0;
 

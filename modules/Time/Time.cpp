@@ -14,16 +14,11 @@
 
 #include "Time.h"
 
-void Time::start() {
-}
+void Time::start() {}
 
-void Time::end() {
+void Time::end() {}
 
-}
-
-void Time::menu() {
-
-}
+void Time::menu() {}
 
 int Time::getMillis() {
     return std::chrono::duration_cast<std::chrono::milliseconds>(

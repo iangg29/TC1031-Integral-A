@@ -33,7 +33,7 @@ _Ir al proyecto descargado_
 _Compilar programa_
 
 ```shell
-    g++ -std=c++11 main.cpp
+    g++ -std=c++14 main.cpp
 ```
 
 _Ejecutar_

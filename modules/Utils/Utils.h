@@ -12,7 +12,14 @@
 #ifndef INTEGRALA_UTILS_H
 #define INTEGRALA_UTILS_H
 
+#include <vector>
 #include "../../Module.h"
+
+using namespace std;
+
+enum class Level {
+    INFO, WARN, ERROR
+};
 
 class Utils : public Module {
 public:
@@ -23,6 +30,10 @@ public:
     void end() override;
 
     void menu() override;
+
+    void log(string, Level);
+
+    void printVector(vector<int>);
 };
 
 

@@ -11,17 +11,14 @@
 //
 
 #include "Module.h"
+#include "exceptions/ModuleFailedLoading.h"
 #include "Application.h"
 
 Module::Module(Application *application, string name) {
     this->application = application;
     this->name = name;
     application->addModule(this);
-    try {
-        start();
-    } catch (exception exception) {
-        logWarn("Module couldn't load.");
-    }
+    log(getName().append(" module loaded successfully."));
 }
 
 Application *Module::getApplication() {
@@ -46,9 +43,5 @@ string Module::getName() {
 
 int Module::getStartupTime() const {
     return this->startupTime;
-}
-
-void Module::start() {
-    if (getApplication()->isDebug()) log(getName().append(" module loaded successfully."));
 }
 

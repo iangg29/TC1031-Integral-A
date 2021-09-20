@@ -14,7 +14,8 @@
 Application *application = nullptr;
 
 int main() {
-    application = new Application(true);
+    application = new Application("Data Structures", true, 0.1);
     application->init();
+    delete application;
     return 0;
 }
