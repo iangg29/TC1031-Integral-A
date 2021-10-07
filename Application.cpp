@@ -27,6 +27,8 @@ Application::~Application() {
     delete this->time;
     delete this->search;
     delete this->sort;
+    delete this->fakeData;
+    delete this->lists;
 }
 
 void Application::init() {
@@ -38,6 +40,7 @@ void Application::init() {
         sort = new Sort(this);
         search = new Search(this);
         fakeData = new FakeData(this);
+        lists = new Lists(this);
         for (Module *module: modules) {
             module->start();
         }

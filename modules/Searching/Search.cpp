@@ -11,7 +11,6 @@
 //
 
 #include "Search.h"
-#include "Application.h"
 
 void Search::start() {}
 

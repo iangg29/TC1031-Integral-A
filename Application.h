@@ -25,6 +25,7 @@
 #include "modules/Sorting/Sort.h"
 #include "modules/Searching/Search.h"
 #include "modules/Data/FakeData.h"
+#include "modules/Lists/Lists.h"
 
 using namespace std;
 
@@ -43,6 +44,7 @@ private:
     Sort *sort = nullptr;
     Search *search = nullptr;
     FakeData *fakeData = nullptr;
+    Lists *lists = nullptr;
 
     string getName();
 
