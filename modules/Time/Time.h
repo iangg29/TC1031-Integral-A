@@ -18,7 +18,7 @@
 
 class Time : public Module {
 public:
-    Time(Application *application) : Module(application, "Time Handler") {}
+    explicit Time(Application *application) : Module(application, "Time Handler") {}
 
     void start() override;
 

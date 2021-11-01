@@ -17,6 +17,8 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <modules/Trees/Trees.h>
+#include <modules/CLI/Cli.h>
 
 #include "Module.h"
 
@@ -35,16 +37,19 @@ private:
     string author;
     float version;
     bool debug;
+    bool started = false;
     unsigned int startTime;
     unsigned int finishTime;
     vector<Module *> modules;
 
+    CLI *cli = nullptr;
     Utils *utils = nullptr;
     Time *time = nullptr;
     Sort *sort = nullptr;
     Search *search = nullptr;
     FakeData *fakeData = nullptr;
     Lists *lists = nullptr;
+    Trees *trees = nullptr;
 
     string getName();
 
@@ -75,7 +80,11 @@ public:
 
     bool isDebug();
 
+    bool isStarted();
+
     void addModule(Module *);
+
+    CLI *getCLIHandler();
 
     Utils *getUtilsHandler();
 
@@ -86,6 +95,8 @@ public:
     Search *getSearchHandler();
 
     FakeData *getFakeDataHandler();
+
+    Trees *getTreesHandler();
 };
 
 

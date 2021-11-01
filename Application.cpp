@@ -20,6 +20,7 @@ Application::Application(string name, bool debug, float version) {
     this->debug = debug;
     this->startTime = 0;
     this->finishTime = 0;
+    this->started = false;
 }
 
 Application::~Application() {
@@ -29,18 +30,22 @@ Application::~Application() {
     delete this->sort;
     delete this->fakeData;
     delete this->lists;
+    delete this->trees;
 }
 
 void Application::init() {
     try {
         if (isDebug()) getUtilsHandler()->log(getName() + " loading ...", Level::INFO);
         this->startTime = getTimeHandler()->getMillis();
+        this->started = true;
+        cli = new CLI(this);
         utils = new Utils(this);
         time = new Time(this);
         sort = new Sort(this);
         search = new Search(this);
         fakeData = new FakeData(this);
         lists = new Lists(this);
+        trees = new Trees(this);
         for (Module *module: modules) {
             module->start();
         }
@@ -48,13 +53,14 @@ void Application::init() {
         if (isDebug())
             getUtilsHandler()->log("Application started in [" + to_string((finishTime - startTime)) + "] ms.",
                                    Level::INFO);
-        stop();
     } catch (ModuleFailedLoading &e) {
         getUtilsHandler()->log(e.what(), Level::ERROR);
     }
+    getCLIHandler()->startMenu();
 }
 
 void Application::stop() {
+    this->started = false;
     for (Module *module: modules) {
         module->end();
     }
@@ -97,6 +103,14 @@ FakeData *Application::getFakeDataHandler() {
     return this->fakeData;
 }
 
+Trees *Application::getTreesHandler() {
+    return this->trees;
+}
+
+CLI *Application::getCLIHandler() {
+    return this->cli;
+}
+
 Application *Application::getApplication() {
     return this;
 }
@@ -124,3 +138,8 @@ void Application::setVersion(float version) {
 void Application::setDebug(bool debug) {
     this->debug = debug;
 }
+
+bool Application::isStarted() {
+    return this->started;
+}
+

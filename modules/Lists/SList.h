@@ -13,12 +13,14 @@
 #ifndef INTEGRALA_SLIST_H
 #define INTEGRALA_SLIST_H
 
+#include "./exceptions/Exception.h"
+
 
 template<class T>
 class SList;
 
 template<class T>
-class SListIterator
+class SListIterator;
 
 template<class T>
 class SLink {
@@ -51,17 +53,17 @@ class SList {
 public:
     SList();
 
-    SList(const SList<T> &);
+    SList(const SList<T> &) throw(OutOfMemory);
 
     ~SList();
 
-    void addFirst(T);
+    void addFirst(T) throw(OutOfMemory);
 
-    void add(T);
+    void add(T) throw(OutOfMemory);
 
-    T getFirst();
+    T getFirst() throw(NoSuchElement);
 
-    T removeFirst();
+    T removeFirst() throw(NoSuchElement);
 
     int length() const;
 
@@ -107,7 +109,7 @@ template<class T>
 SList<T>::SList() : head(nullptr), size(0) {}
 
 template<class T>
-SList<T>::SList(const SList<T> &source) {
+SList<T>::SList(const SList<T> &source) throw(OutOfMemory) {
     SLink<T> *p, *q;
     if (source.isEmpty()) {
         size = 0;
@@ -115,13 +117,13 @@ SList<T>::SList(const SList<T> &source) {
     } else {
         p = source.head;
         head = new SLink<T>(p->value);
-        if (head == nullptr) // TODO: Handle exceptions. OutOfMemory
-            q = head;
+        if (head == nullptr) throw OutOfMemory();
+        q = head;
         p = p->next;
         while (p != nullptr) {
             q->next = new SLink<T>(p->value);
-            if (q->next == nullptr) // TODO: OutOfMemory
-                p = p->next;
+            if (q->next == nullptr) throw OutOfMemory();
+            p = p->next;
             q = q->next;
         }
         size = source.size;
@@ -134,24 +136,24 @@ SList<T>::~SList() {
 }
 
 template<class T>
-void SList<T>::addFirst(T val) {
+void SList<T>::addFirst(T val) throw(OutOfMemory) {
     SLink<T> *newLink;
     newLink = new SLink<T>(val);
-    if (newLink == nullptr) // TODO: OutOfMemory
-        newLink->next = head;
+    if (newLink == nullptr) throw OutOfMemory();
+    newLink->next = head;
     head = newLink;
     size++;
 }
 
 template<class T>
-void SList<T>::add(T val) {
+void SList<T>::add(T val) throw(OutOfMemory) {
     SLink<T> *newLink, *p;
     newLink = new SLink<T>(val);
-    if (newLink == nullptr) // TODO: OutOfMemory
-        if (isEmpty()) {
-            addFirst(val);
-            return;
-        }
+    if (newLink == nullptr) throw OutOfMemory();
+    if (isEmpty()) {
+        addFirst(val);
+        return;
+    }
     p = head;
     while (p->next != nullptr) {
         p = p->next;
@@ -162,17 +164,17 @@ void SList<T>::add(T val) {
 }
 
 template<class T>
-T SList<T>::getFirst() {
-    if (isEmpty()) // TODO: NoSuchElement
-        return head->value;
+T SList<T>::getFirst() throw(NoSuchElement) {
+    if (isEmpty()) throw NoSuchElement();
+    return head->value;
 }
 
 template<class T>
-T SList<T>::removeFirst() {
+T SList<T>::removeFirst() throw(NoSuchElement) {
     T val;
     SLink<T> *p;
-    if (isEmpty()) // TODO: NoSuchElement
-        p = head;
+    if (isEmpty()) throw NoSuchElement();
+    p = head;
     head = p->next;
     val = p->value;
     delete p;
