@@ -43,7 +43,7 @@ bool CSVFile::isOpen() {
 DList<std::string> CSVFile::exportList() {
     DList<std::string> lista;
     if (!isOpen()) {
-        std::cout << "NO ABRE LA CHINGADERA" << std::endl;
+        std::cout << "NO ABRE EL ARCHIVO" << std::endl;
         exit(EXIT_FAILURE);
     }
     std::string line, word;
