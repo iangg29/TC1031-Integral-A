@@ -4,100 +4,83 @@
 // Ian García González
 // A01706892
 //
-// File created on 19/09/21.
+// File created on 22/11/21.
 //
 // Copyright © 2021. All rights reserved.
 //
 //
-#pragma once
 
 #ifndef INTEGRALA_APPLICATION_H
 #define INTEGRALA_APPLICATION_H
 
-#include <iostream>
 #include <string>
-#include <vector>
-#include <modules/Trees/Trees.h>
-#include <modules/CLI/Cli.h>
-
-#include "Module.h"
-
-#include "modules/Utils/Utils.h"
-#include "modules/Time/Time.h"
-#include "modules/Sorting/Sort.h"
-#include "modules/Searching/Search.h"
-#include "modules/Data/FakeData.h"
-#include "modules/Lists/Lists.h"
-
-using namespace std;
+#include "CSVFile.h"
 
 class Application {
 private:
-    string name;
-    string author;
+    std::string name;
     float version;
     bool debug;
-    bool started = false;
-    unsigned int startTime;
-    unsigned int finishTime;
-    vector<Module *> modules;
 
-    CLI *cli = nullptr;
-    Utils *utils = nullptr;
-    Time *time = nullptr;
-    Sort *sort = nullptr;
-    Search *search = nullptr;
-    FakeData *fakeData = nullptr;
-    Lists *lists = nullptr;
-    Trees *trees = nullptr;
+    static void log(const std::string &);
 
-    string getName();
-
-    string getAuthor();
-
-    float getVersion();
-
-    Application *getApplication();
-
-    const Application *getApplication() const;
-
-    void setName(string);
-
-    void setAuthor(string);
-
-    void setVersion(float);
-
-    void setDebug(bool);
+    void menu();
 
 public:
-    Application(string, bool, float);
+    Application(const std::string &, float, bool);
 
-    ~Application();
+    void init() const;
 
-    void init();
+    const std::string &getName() const;
 
-    void stop();
+    float getVersion() const;
 
-    bool isDebug();
-
-    bool isStarted();
-
-    void addModule(Module *);
-
-    CLI *getCLIHandler();
-
-    Utils *getUtilsHandler();
-
-    Time *getTimeHandler();
-
-    Sort *getSortHandler();
-
-    Search *getSearchHandler();
-
-    FakeData *getFakeDataHandler();
-
-    Trees *getTreesHandler();
+    bool isDebug() const;
 };
+
+Application::Application(const std::string &name, float version, bool debug) {
+    this->name = name;
+    this->version = version;
+    this->debug = debug;
+}
+
+void Application::init() const {
+    log("----------");
+    log(getName() + " starting now...");
+    log("Loading version v" + std::to_string(getVersion()));
+    log((isDebug() ? "Running in DEBUG mode." : "Running in PRODUCTION."));
+    log("----------");
+    CSVFile seasonsFile("./data/seasons.csv");
+    DList<std::string> list = seasonsFile.exportList();
+}
+
+const std::string &Application::getName() const {
+    return this->name;
+}
+
+float Application::getVersion() const {
+    return this->version;
+}
+
+bool Application::isDebug() const {
+    return this->debug;
+}
+
+void Application::log(const std::string &message) {
+    std::cout << "[*] " << message << std::endl;
+}
+
+void Application::menu() {
+    log("---- MENU ----");
+    log("Selecciona una opción:");
+    log("1. Pilotos");
+    log("2. Circuitos");
+    log("3. Escuderías");
+    log("4. Carreras");
+    log("5. Temporadas");
+    log("6. Tiempos de vuelta");
+    log("--------------");
+}
 
 
 #endif //INTEGRALA_APPLICATION_H
