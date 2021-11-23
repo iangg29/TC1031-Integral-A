@@ -26,9 +26,9 @@ private:
 public:
     explicit CSVFile(const std::string &);
 
-    DList<std::string> exportList();
-
     bool isOpen();
+
+    const std::ifstream &getFile() const;
 };
 
 CSVFile::CSVFile(const std::string &file_name) {
@@ -40,21 +40,8 @@ bool CSVFile::isOpen() {
     return this->file.is_open();
 }
 
-DList<std::string> CSVFile::exportList() {
-    DList<std::string> lista;
-    if (!isOpen()) {
-        std::cout << "NO ABRE EL ARCHIVO" << std::endl;
-        exit(EXIT_FAILURE);
-    }
-    std::string line, word;
-    while (std::getline(file, line)) {
-        std::stringstream s(line);
-        while (std::getline(s, word, ',')) {
-            std::cout << word << std::endl;
-        }
-        std::cout << std::endl;
-    }
-    return lista;
+const std::ifstream &CSVFile::getFile() const {
+    return file;
 }
 
 
