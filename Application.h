@@ -18,7 +18,6 @@
 
 #include "CSVFile.h"
 #include "models/Extra.h"
-#include "files/Files.h"
 
 class Application {
 private:
@@ -27,6 +26,8 @@ private:
     bool debug;
     bool started;
     bool dataLoaded;
+
+    LapTimeList *list = nullptr;
 
     static void log(const std::string &);
 
@@ -38,6 +39,8 @@ private:
 
 public:
     Application(const std::string &, float, bool);
+
+    ~Application();
 
     void init();
 
@@ -56,6 +59,8 @@ public:
     bool isStarted() const;
 
     void setStarted(bool appStarted);
+
+    LapTimeList *getList() const;
 };
 
 Application::Application(const std::string &name, float version, bool debug) {
@@ -64,6 +69,10 @@ Application::Application(const std::string &name, float version, bool debug) {
     this->debug = debug;
     this->dataLoaded = false;
     this->started = false;
+}
+
+Application::~Application() {
+    delete list;
 }
 
 void Application::init() {
@@ -96,18 +105,16 @@ void Application::log(const std::string &message) {
 void Application::menu() {
     log("---- MENU ----");
     log("Selecciona una opción:");
-    log("1. Pilotos");
-    log("2. Circuitos");
-    log("3. Escuderías");
-    log("4. Carreras");
-    log("5. Temporadas");
-    log("6. Tiempos de vuelta");
-    log("7. Salir");
+    log("1. Tiempos de vuelta");
+    log("2. Carreras");
+    log("3. Pilotos");
+    log("4. Circuitos");
+    log("5. Salir");
     log("--------------");
 }
 
 void Application::launchCLI() {
-    if (!isDataLoaded()) log("Data hasn't been loaded completely.");
+    if (!isDataLoaded()) log("Data hasn't been loaded completely yet.");
     int option;
     do {
         menu();
@@ -118,9 +125,19 @@ void Application::launchCLI() {
         }
         switch (option) {
             case 1:
+                log("Estos son los tiempos de vuelta.");
+                std::cout << getList()->toStringForward() << std::endl;
+                break;
+            case 2:
+                log("Estos son las carreras.");
+                break;
+            case 3:
                 log("Estos son los pilotos.");
                 break;
-            case 7:
+            case 4:
+                log("Estos son los circuitos.");
+                break;
+            case 5:
                 end();
                 break;
             default:
@@ -139,6 +156,8 @@ void Application::setDataLoaded(bool loaded) {
 }
 
 void Application::loadData() {
+    LapTimesFile seasonsFile("./data/lap_times.csv");
+    list = seasonsFile.exportList();
     setDataLoaded(true);
 }
 
@@ -151,9 +170,14 @@ void Application::setStarted(bool appStarted) {
 }
 
 void Application::end() {
+    list->clear();
     log("Thanks for using this application.");
     log("Application closed successfully.");
     setStarted(false);
+}
+
+LapTimeList *Application::getList() const {
+    return list;
 }
 
 
