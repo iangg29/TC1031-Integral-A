@@ -18,6 +18,7 @@
 #include <sstream>
 #include <map>
 #include "structures/LapTimeList.h"
+#include "structures/CircuitsAVL.h"
 
 class CSVFile {
 private:
@@ -79,6 +80,65 @@ LapTimeList *LapTimesFile::exportList() {
 }
 
 bool LapTimesFile::isOpen() {
+    return this->file.is_open();
+}
+
+
+class CircuitsFile : public CSVFile {
+private:
+    std::ifstream file;
+
+public:
+    explicit CircuitsFile(const std::string &file_name);
+
+    CircuitsAVL *exportAVL();
+
+    bool isOpen();
+};
+
+CircuitsFile::CircuitsFile(const std::string &file_name) : CSVFile(file_name) {
+    this->file.open(file_name);
+}
+
+CircuitsAVL *CircuitsFile::exportAVL() {
+    auto *circuitsAVL = new CircuitsAVL;
+    int count = 0;
+    std::vector<std::vector<std::string>> lista;
+    if (!isOpen()) {
+        std::cout << "NO ABRE EL ARCHIVO" << std::endl;
+        exit(EXIT_FAILURE);
+    }
+    std::vector<std::string> pj;
+    std::string line, word;
+    while (std::getline(this->file, line)) {
+        count++;
+        if (count == 1) continue;
+        std::stringstream s(line);
+        Circuit circuit;
+        std::vector<std::string> newRecord;
+
+        while (std::getline(s, word, ',')) {
+            newRecord.push_back(word);
+        }
+
+        circuit.circuitId = std::stoi(newRecord[0]);
+        circuit.ref = newRecord[1];
+        circuit.name = newRecord[2];
+        circuit.location = newRecord[3];
+        circuit.country = newRecord[4];
+        circuit.latitude = std::stol(newRecord[5]);
+        circuit.longitude = std::stol(newRecord[6]);
+        circuit.altitude = std::stol(newRecord[7]);
+        circuit.url = newRecord[8];
+
+
+        circuitsAVL->add(circuit);
+        newRecord.clear();
+    }
+    return circuitsAVL;
+}
+
+bool CircuitsFile::isOpen() {
     return this->file.is_open();
 }
 

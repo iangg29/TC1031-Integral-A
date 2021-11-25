@@ -28,6 +28,7 @@ private:
     bool dataLoaded;
 
     LapTimeList *list = nullptr;
+    CircuitsAVL *circuits = nullptr;
 
     static void log(const std::string &);
 
@@ -61,6 +62,8 @@ public:
     void setStarted(bool appStarted);
 
     LapTimeList *getList() const;
+
+    CircuitsAVL *getCircuits() const;
 };
 
 Application::Application(const std::string &name, float version, bool debug) {
@@ -136,6 +139,7 @@ void Application::launchCLI() {
                 break;
             case 4:
                 log("Estos son los circuitos.");
+                std::cout << getCircuits()->inorder() << std::endl;
                 break;
             case 5:
                 end();
@@ -157,7 +161,9 @@ void Application::setDataLoaded(bool loaded) {
 
 void Application::loadData() {
     LapTimesFile seasonsFile("./data/lap_times.csv");
+    CircuitsFile circuitsFile("./data/circuits.csv");
     list = seasonsFile.exportList();
+    circuits = circuitsFile.exportAVL();
     setDataLoaded(true);
 }
 
@@ -178,6 +184,10 @@ void Application::end() {
 
 LapTimeList *Application::getList() const {
     return list;
+}
+
+CircuitsAVL *Application::getCircuits() const {
+    return circuits;
 }
 
 
