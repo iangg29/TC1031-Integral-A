@@ -20,6 +20,7 @@
 #include "structures/LapTimeList.h"
 #include "structures/CircuitsAVL.h"
 #include "structures/DriversBST.h"
+#include "structures/RacesList.h"
 
 class CSVFile {
 private:
@@ -198,6 +199,63 @@ DriversBST *DriversFile::exportBST() {
 }
 
 bool DriversFile::isOpen() {
+    return this->file.is_open();
+}
+
+// ------------------------------------------------
+
+class RacesFile : public CSVFile {
+private:
+    std::ifstream file;
+
+public:
+    explicit RacesFile(const std::string &file_name);
+
+    RacesList *exportList();
+
+    bool isOpen();
+};
+
+RacesFile::RacesFile(const std::string &file_name) : CSVFile(file_name) {
+    this->file.open(file_name);
+}
+
+RacesList *RacesFile::exportList() {
+    auto *racesList = new RacesList;
+    int count = 0;
+    if (!isOpen()) {
+        std::cout << "NO ABRE EL ARCHIVO" << std::endl;
+        exit(EXIT_FAILURE);
+    }
+    std::vector<std::string> pj;
+    std::string line, word;
+    while (std::getline(this->file, line)) {
+        count++;
+        if (count == 1) continue;
+        std::stringstream s(line);
+        Race race;
+        std::vector<std::string> newRecord;
+
+        while (std::getline(s, word, ',')) {
+            newRecord.push_back(word);
+        }
+
+        race.raceId = std::stoi(newRecord[0]);
+        race.year = std::stoi(newRecord[1]);
+        race.round = std::stoi(newRecord[2]);
+        race.circuitId = std::stoi(newRecord[3]);
+        race.name = newRecord[4];
+        race.date = newRecord[5];
+        race.time = newRecord[6];
+        race.url = newRecord[7];
+
+        racesList->insert(race);
+        newRecord.clear();
+    }
+    return racesList;
+}
+
+bool RacesFile::isOpen() {
     return this->file.is_open();
 }
 

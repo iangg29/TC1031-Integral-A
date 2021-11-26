@@ -19,6 +19,10 @@
 #include "CSVFile.h"
 #include "models/Extra.h"
 
+enum class IntegralType {
+    A, B
+};
+
 class Application {
 private:
     std::string name;
@@ -26,10 +30,12 @@ private:
     bool debug;
     bool started;
     bool dataLoaded;
+    IntegralType integralType;
 
     LapTimeList *list = nullptr;
     CircuitsAVL *circuits = nullptr;
     DriversBST *drivers = nullptr;
+    RacesList *races = nullptr;
 
     static void log(const std::string &);
 
@@ -62,11 +68,15 @@ public:
 
     void setStarted(bool appStarted);
 
+    IntegralType getIntegralType() const;
+
     LapTimeList *getList() const;
 
     CircuitsAVL *getCircuits() const;
 
     DriversBST *getDrivers() const;
+
+    RacesList *getRaces() const;
 };
 
 Application::Application(const std::string &name, float version, bool debug) {
@@ -75,12 +85,30 @@ Application::Application(const std::string &name, float version, bool debug) {
     this->debug = debug;
     this->dataLoaded = false;
     this->started = false;
+    log("¿Qué integral es esta? (A/B)");
+    char type;
+    std::cin >> type;
+    switch (type) {
+        case 'A':
+            this->integralType = IntegralType::A;
+            log("Iniciando version Integral-A");
+            break;
+        case 'B':
+            this->integralType = IntegralType::B;
+            log("Iniciando version Integral-B");
+            break;
+        default:
+            this->integralType = IntegralType::A;
+            log("Opción incorrecta, iniciando versión Integral-A");
+            break;
+    }
 }
 
 Application::~Application() {
     delete list;
     delete circuits;
     delete drivers;
+    delete races;
 }
 
 void Application::init() {
@@ -89,6 +117,8 @@ void Application::init() {
     log(getName() + " starting now...");
     log("Loading version v" + std::to_string(getVersion()));
     loadData();
+    log((getIntegralType() == IntegralType::A ? "Estructuras incluidas: Doubly Linked List, BST, Sort."
+                                              : "Estructuras incluidas: Graphs, Hash Tables, AVL Tree."));
     log((isDebug() ? "Running in DEBUG mode." : "Running in PRODUCTION."));
     log("--------------");
     launchCLI();
@@ -117,7 +147,8 @@ void Application::menu() {
     log("2. Carreras");
     log("3. Pilotos");
     log("4. Circuitos");
-    log("5. Salir");
+    log("5. Run automated tests");
+    log("6. Salir");
     log("--------------");
 }
 
@@ -138,6 +169,7 @@ void Application::launchCLI() {
                 break;
             case 2:
                 log("Estos son las carreras.");
+                std::cout << getRaces()->toString() << std::endl;
                 break;
             case 3:
                 log("Estos son los pilotos.");
@@ -148,6 +180,10 @@ void Application::launchCLI() {
                 std::cout << getCircuits()->inorder() << std::endl;
                 break;
             case 5:
+                log("Running automated tests...");
+                // TODO: Automated tests.
+                break;
+            case 6:
                 end();
                 break;
             default:
@@ -166,12 +202,14 @@ void Application::setDataLoaded(bool loaded) {
 }
 
 void Application::loadData() {
-    LapTimesFile seasonsFile("./data/lap_times.csv");
+    LapTimesFile lapTimesFile("./data/lap_times.csv");
     CircuitsFile circuitsFile("./data/circuits.csv");
     DriversFile driversFile("./data/drivers.csv");
-    list = seasonsFile.exportList();
+    RacesFile racesFile("./data/races.csv");
+    list = lapTimesFile.exportList();
     circuits = circuitsFile.exportAVL();
     drivers = driversFile.exportBST();
+    races = racesFile.exportList();
     setDataLoaded(true);
 }
 
@@ -185,6 +223,8 @@ void Application::setStarted(bool appStarted) {
 
 void Application::end() {
     list->clear();
+    circuits->removeAll();
+    races->clear();
     log("Thanks for using this application.");
     log("Application closed successfully.");
     setStarted(false);
@@ -200,6 +240,14 @@ CircuitsAVL *Application::getCircuits() const {
 
 DriversBST *Application::getDrivers() const {
     return drivers;
+}
+
+IntegralType Application::getIntegralType() const {
+    return integralType;
+}
+
+RacesList *Application::getRaces() const {
+    return races;
 }
 
 
