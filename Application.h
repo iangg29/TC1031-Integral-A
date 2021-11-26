@@ -29,6 +29,7 @@ private:
 
     LapTimeList *list = nullptr;
     CircuitsAVL *circuits = nullptr;
+    DriversBST *drivers = nullptr;
 
     static void log(const std::string &);
 
@@ -64,6 +65,8 @@ public:
     LapTimeList *getList() const;
 
     CircuitsAVL *getCircuits() const;
+
+    DriversBST *getDrivers() const;
 };
 
 Application::Application(const std::string &name, float version, bool debug) {
@@ -76,6 +79,8 @@ Application::Application(const std::string &name, float version, bool debug) {
 
 Application::~Application() {
     delete list;
+    delete circuits;
+    delete drivers;
 }
 
 void Application::init() {
@@ -136,6 +141,7 @@ void Application::launchCLI() {
                 break;
             case 3:
                 log("Estos son los pilotos.");
+                std::cout << drivers->inorder() << std::endl;
                 break;
             case 4:
                 log("Estos son los circuitos.");
@@ -162,8 +168,10 @@ void Application::setDataLoaded(bool loaded) {
 void Application::loadData() {
     LapTimesFile seasonsFile("./data/lap_times.csv");
     CircuitsFile circuitsFile("./data/circuits.csv");
+    DriversFile driversFile("./data/drivers.csv");
     list = seasonsFile.exportList();
     circuits = circuitsFile.exportAVL();
+    drivers = driversFile.exportBST();
     setDataLoaded(true);
 }
 
@@ -188,6 +196,10 @@ LapTimeList *Application::getList() const {
 
 CircuitsAVL *Application::getCircuits() const {
     return circuits;
+}
+
+DriversBST *Application::getDrivers() const {
+    return drivers;
 }
 
 

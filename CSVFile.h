@@ -19,6 +19,7 @@
 #include <map>
 #include "structures/LapTimeList.h"
 #include "structures/CircuitsAVL.h"
+#include "structures/DriversBST.h"
 
 class CSVFile {
 private:
@@ -31,6 +32,7 @@ CSVFile::CSVFile(const std::string &file_name) {
     this->name = file_name;
 }
 
+// ------------------------------------------------
 
 class LapTimesFile : public CSVFile {
 private:
@@ -51,7 +53,6 @@ LapTimesFile::LapTimesFile(const std::string &file_name) : CSVFile(file_name) {
 LapTimeList *LapTimesFile::exportList() {
     auto *lapTimeList = new LapTimeList;
     int count = 0;
-    std::vector<std::vector<std::string>> lista;
     if (!isOpen()) {
         std::cout << "NO ABRE EL ARCHIVO" << std::endl;
         exit(EXIT_FAILURE);
@@ -83,6 +84,7 @@ bool LapTimesFile::isOpen() {
     return this->file.is_open();
 }
 
+// ------------------------------------------------
 
 class CircuitsFile : public CSVFile {
 private:
@@ -103,7 +105,6 @@ CircuitsFile::CircuitsFile(const std::string &file_name) : CSVFile(file_name) {
 CircuitsAVL *CircuitsFile::exportAVL() {
     auto *circuitsAVL = new CircuitsAVL;
     int count = 0;
-    std::vector<std::vector<std::string>> lista;
     if (!isOpen()) {
         std::cout << "NO ABRE EL ARCHIVO" << std::endl;
         exit(EXIT_FAILURE);
@@ -139,6 +140,64 @@ CircuitsAVL *CircuitsFile::exportAVL() {
 }
 
 bool CircuitsFile::isOpen() {
+    return this->file.is_open();
+}
+
+// ------------------------------------------------
+
+class DriversFile : public CSVFile {
+private:
+    std::ifstream file;
+
+public:
+    explicit DriversFile(const std::string &file_name);
+
+    DriversBST *exportBST();
+
+    bool isOpen();
+};
+
+DriversFile::DriversFile(const std::string &file_name) : CSVFile(file_name) {
+    this->file.open(file_name);
+}
+
+DriversBST *DriversFile::exportBST() {
+    auto *driversBST = new DriversBST;
+    int count = 0;
+    if (!isOpen()) {
+        std::cout << "NO ABRE EL ARCHIVO" << std::endl;
+        exit(EXIT_FAILURE);
+    }
+    std::vector<std::string> pj;
+    std::string line, word;
+    while (std::getline(this->file, line)) {
+        count++;
+        if (count == 1) continue;
+        std::stringstream s(line);
+        Driver driver;
+        std::vector<std::string> newRecord;
+
+        while (std::getline(s, word, ',')) {
+            newRecord.push_back(word);
+        }
+
+        driver.driverId = std::stoi(newRecord[0]);
+        driver.ref = newRecord[1];
+        driver.number = (newRecord[2] == "\\N" ? -1 : std::stoi(newRecord[2]));
+        driver.code = newRecord[3];
+        driver.forename = newRecord[4];
+        driver.surname = newRecord[5];
+        driver.birthdate = newRecord[6];
+        driver.nationality = newRecord[7];
+        driver.url = newRecord[8];
+
+        driversBST->add(driver);
+        newRecord.clear();
+    }
+    return driversBST;
+}
+
+bool DriversFile::isOpen() {
     return this->file.is_open();
 }
 
