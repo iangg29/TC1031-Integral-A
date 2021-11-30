@@ -49,6 +49,8 @@ private:
 
     void loadData();
 
+    static void assertResult(std::string &, std::string &);
+
 public:
     Application(const std::string &, float, bool);
 
@@ -212,17 +214,41 @@ void Application::launchCLI() {
                         std::chrono::system_clock::now().time_since_epoch()).count();
                 std::cout << std::endl;
                 log("Running automated tests...");
-                log("[!!] INTEGRAL A");
+                log("[!] INTEGRAL A");
                 log("-- Algoritmos de ordenamiento");
+                std::string result, expected;
+                std::vector<LapTime> laps = getList()->toVec(), cleaned;
+                Sorts sorts;
+                sorts.mergeSort(laps);
+                for (auto &lap: laps) {
+                    if (lap.time.empty()) continue;
+                    cleaned.push_back(lap);
+                }
+                for (int i = 0; i < 5; ++i) {
+                    result.append("[" + getRaces()->search(cleaned[i].raceId)->name + "] x [" +
+                                  getDrivers()->find(cleaned[i].driverId)->code + "] " + cleaned[i].time + "\n");
+                }
+                expected = "[\"Sakhir Grand Prix\"] x [\"RUS\"] \"0:55.404\"\n[\"Sakhir Grand Prix\"] x [\"RUS\"] \"0:56.319\"\n[\"Sakhir Grand Prix\"] x [\"RUS\"] \"0:56.393\"\n[\"Sakhir Grand Prix\"] x [\"RUS\"] \"0:56.442\"\n[\"Sakhir Grand Prix\"] x [\"RUS\"] \"0:56.499\"\n";
+                assertResult(result, expected);
                 log("-- Estructuras lineales");
+                result = getRaces()->toString(5);
+                expected = "1. \"Australian Grand Prix\" (2009)\n2. \"Malaysian Grand Prix\" (2009)\n3. \"Chinese Grand Prix\" (2009)\n4. \"Bahrain Grand Prix\" (2009)\n5. \"Spanish Grand Prix\" (2009)\n";
+                assertResult(result, expected);
                 log("-- Árboles");
-                log("[!!] INTEGRAL B");
+                result = getDrivers()->inorder(5);
+                expected = "\n1. \"Lewis\" \"Hamilton\" [\"HAM\"] #44\n2. \"Nick\" \"Heidfeld\" [\"HEI\"]\n3. \"Nico\" \"Rosberg\" [\"ROS\"] #6\n4. \"Fernando\" \"Alonso\" [\"ALO\"] #14\n5. \"Heikki\" \"Kovalainen\" [\"KOV\"]";
+                assertResult(result, expected);
+                log("[!] INTEGRAL B");
                 log("-- Grafos");
+                // TODO: Graphs test cases.
                 log("-- Hashes");
+                // TODO: Hashes test cases.
                 log("-- AVL");
+                // TODO: AVL test cases.
                 finishTime = std::chrono::duration_cast<std::chrono::milliseconds>(
                         std::chrono::system_clock::now().time_since_epoch()).count();
-                std::cout << "[!] Successfully ran test cases. (Took " << (finishTime - startTime) << " ms)" << std::endl;
+                std::cout << "[!] Successfully ran test cases. (Took " << (finishTime - startTime) << " ms)"
+                          << std::endl;
                 std::cout << std::endl;
                 break;
             }
@@ -291,6 +317,14 @@ IntegralType Application::getIntegralType() const {
 
 RacesList *Application::getRaces() const {
     return races;
+}
+
+void Application::assertResult(std::string &result, std::string &expected) {
+    if (expected == result) {
+        log("[RESULT] SUCCESS");
+    } else {
+        log("[RESULT] FAILED (Result and Expected do not match).");
+    }
 }
 
 #endif  //INTEGRALA_APPLICATION_H
