@@ -16,6 +16,7 @@
 #include <fstream>
 #include <limits>
 #include <string>
+#include <chrono>
 
 #include "CSVFile.h"
 #include "models/Extra.h"
@@ -205,9 +206,26 @@ void Application::launchCLI() {
                 std::cout << getCircuits()->inorder(count) << std::endl;
                 break;
             }
-            case 5:
+            case 5: {
+                unsigned int startTime, finishTime;
+                startTime = std::chrono::duration_cast<std::chrono::milliseconds>(
+                        std::chrono::system_clock::now().time_since_epoch()).count();
+                std::cout << std::endl;
                 log("Running automated tests...");
+                log("[!!] INTEGRAL A");
+                log("-- Algoritmos de ordenamiento");
+                log("-- Estructuras lineales");
+                log("-- Árboles");
+                log("[!!] INTEGRAL B");
+                log("-- Grafos");
+                log("-- Hashes");
+                log("-- AVL");
+                finishTime = std::chrono::duration_cast<std::chrono::milliseconds>(
+                        std::chrono::system_clock::now().time_since_epoch()).count();
+                std::cout << "[!] Successfully ran test cases. (Took " << (finishTime - startTime) << " ms)" << std::endl;
+                std::cout << std::endl;
                 break;
+            }
             case 6:
                 end();
                 break;

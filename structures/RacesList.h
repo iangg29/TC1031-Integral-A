@@ -51,7 +51,7 @@ public:
 
     void update(int, Race);
 
-    Race *search(int) const;
+    Race *search(unsigned int) const;
 
     Race deleteAt(int);
 
@@ -123,7 +123,7 @@ void RacesList::update(int index, Race race) {
     p->value = std::move(race);
 }
 
-Race *RacesList::search(int id) const {
+Race *RacesList::search(unsigned int id) const {
     RacesLink *p;
     if (isEmpty()) return nullptr;
     p = head;
