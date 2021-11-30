@@ -18,6 +18,7 @@
 
 #include "CSVFile.h"
 #include "models/Extra.h"
+#include "helpers/Sorts.h"
 
 enum class IntegralType {
     A, B
@@ -117,8 +118,8 @@ void Application::init() {
     log(getName() + " starting now...");
     log("Loading version v" + std::to_string(getVersion()));
     loadData();
-    log((getIntegralType() == IntegralType::A ? "Estructuras incluidas: Doubly Linked List, BST, Sort."
-                                              : "Estructuras incluidas: Graphs, Hash Tables, AVL Tree."));
+    log((getIntegralType() == IntegralType::A ? "Data structures included: Doubly Linked List, BST, Sort."
+                                              : "Data structures included: Graphs, Hash Tables, AVL Tree."));
     log((isDebug() ? "Running in DEBUG mode." : "Running in PRODUCTION."));
     log("--------------");
     launchCLI();
@@ -163,25 +164,44 @@ void Application::launchCLI() {
             std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
         }
         switch (option) {
-            case 1:
-                log("Estos son los tiempos de vuelta.");
-                std::cout << getList()->toStringForward() << std::endl;
+            case 1: {
+                int count;
+                Sorts sort;
+                log("¿Cuántos tiempos de vuelta ordenados deseas observar?");
+                std::cin >> count;
+                std::vector<LapTime> laps = getList()->toVec(), cleaned;
+                sort.mergeSort(laps);
+                for (auto &lap: laps) {
+                    if (lap.time.empty()) continue;
+                    cleaned.push_back(lap);
+                }
+                for (int i = 0; i < count; ++i) {
+                    std::cout << "[" << getRaces()->search(cleaned[i].raceId)->name << "] x ["
+                              << getDrivers()->find(cleaned[i].driverId)->code << "] " << cleaned[i].time
+                              << std::endl;
+                }
                 break;
-            case 2:
-                log("Estos son las carreras.");
-                std::cout << getRaces()->toString() << std::endl;
+            }
+            case 2: {
+                int count;
+                log("¿Cuántas carreras deseas observar?");
+                std::cin >> count;
+                std::cout << getRaces()->toString(count) << std::endl;
                 break;
-            case 3:
-                log("Estos son los pilotos.");
-                std::cout << drivers->inorder() << std::endl;
+            }
+            case 3: {
+                int count;
+                log("¿Cuántos pilotos deseas observar?");
+                std::cin >> count;
+                std::cout << drivers->inorder(count) << std::endl;
                 break;
+            }
             case 4:
                 log("Estos son los circuitos.");
                 std::cout << getCircuits()->inorder() << std::endl;
                 break;
             case 5:
                 log("Running automated tests...");
-                // TODO: Automated tests.
                 break;
             case 6:
                 end();

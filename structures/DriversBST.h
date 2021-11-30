@@ -30,11 +30,11 @@ public:
 
     void add(const Driver &);
 
-    bool find(int);
+    Driver *find(unsigned int);
 
     void preorder(std::stringstream &) const;
 
-    void inorder(std::stringstream &) const;
+    void inorder(std::stringstream &, int &, int &) const;
 
     void postorder(std::stringstream &) const;
 
@@ -71,13 +71,18 @@ void BSTNode::add(const Driver &driver) {
     }
 }
 
-bool BSTNode::find(int id) {
-    if (id == value.driverId) return true;
+Driver *BSTNode::find(unsigned int id) {
+    if (id == value.driverId) return &value;
     if (id < value.driverId) {
-        return (left != nullptr && left->find(id));
+        if (left != nullptr) {
+            return left->find(id);
+        }
     } else {
-        return (right != nullptr && right->find(id));
+        if (right != nullptr) {
+            return right->find(id);
+        }
     }
+    return nullptr;
 }
 
 void BSTNode::preorder(std::stringstream &aux) const {
@@ -92,11 +97,16 @@ void BSTNode::preorder(std::stringstream &aux) const {
     }
 }
 
-void BSTNode::inorder(std::stringstream &aux) const {
-    if (left != nullptr) left->inorder(aux);
-    if (aux.tellp() != 1) aux << " ";
-    aux << value.ref;
-    if (right != nullptr) right->inorder(aux);
+void BSTNode::inorder(std::stringstream &aux, int &count, int &counter) const {
+    if (count <= 0) return;
+    if (left != nullptr) left->inorder(aux, count, counter);
+    if (aux.tellp() != 1) aux << std::endl;
+    std::string code = (value.code == "\\N" ? "" : " [" + value.code + "]");
+    std::string number = (value.number == -1 ? "" : " #" + std::to_string(value.number));
+    aux << counter << ". " << value.forename << " " << value.surname << code << number;
+    count--;
+    counter++;
+    if (right != nullptr) right->inorder(aux, count, counter);
 }
 
 void BSTNode::postorder(std::stringstream &aux) const {
@@ -156,6 +166,7 @@ int BSTNode::whatLevelAmI(const Driver &driver) {
 class DriversBST {
 private:
     BSTNode *root;
+    int size;
 public:
     DriversBST();
 
@@ -163,11 +174,11 @@ public:
 
     void add(const Driver &);
 
-    bool find(const Driver &) const;
+    Driver *find(unsigned int &) const;
 
     std::string preorder() const;
 
-    std::string inorder() const;
+    std::string inorder(int) const;
 
     std::string postorder() const;
 
@@ -196,11 +207,12 @@ void DriversBST::add(const Driver &driver) {
     } else {
         root = new BSTNode(driver);
     }
+    size++;
 }
 
-bool DriversBST::find(const Driver &driver) const {
-    if (!isEmpty()) return root->find(driver.driverId);
-    return false;
+Driver *DriversBST::find(unsigned int &id) const {
+    if (!isEmpty()) return root->find(id);
+    return nullptr;
 }
 
 std::string DriversBST::preorder() const {
@@ -211,11 +223,14 @@ std::string DriversBST::preorder() const {
     return aux.str();
 }
 
-std::string DriversBST::inorder() const {
+std::string DriversBST::inorder(int count) const {
+    if (count > size) {
+        std::cout << "[!] No existen tantos pilotos para imprimir. (Max: " << size << ")" << std::endl;
+        return "";
+    }
     std::stringstream aux;
-    aux << "[";
-    if (!isEmpty()) root->inorder(aux);
-    aux << "]";
+    int counter = 1;
+    if (!isEmpty()) root->inorder(aux, count, counter);
     return aux.str();
 }
 
@@ -238,7 +253,7 @@ std::string DriversBST::levelorder() const {
 std::string DriversBST::visit() {
     std::stringstream aux;
     aux << preorder() << std::endl;
-    aux << inorder() << std::endl;
+    aux << inorder(size) << std::endl;
     aux << postorder() << std::endl;
     aux << levelorder();
     return aux.str();

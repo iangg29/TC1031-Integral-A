@@ -51,7 +51,7 @@ public:
 
     void update(int, Race);
 
-    int search(int) const;
+    Race *search(int) const;
 
     Race deleteAt(int);
 
@@ -59,7 +59,7 @@ public:
 
     bool isEmpty() const;
 
-    std::string toString() const;
+    std::string toString(int) const;
 
 private:
     RacesLink *head;
@@ -123,18 +123,15 @@ void RacesList::update(int index, Race race) {
     p->value = std::move(race);
 }
 
-int RacesList::search(int id) const {
-    int position;
+Race *RacesList::search(int id) const {
     RacesLink *p;
-    if (isEmpty()) return -1;
+    if (isEmpty()) return nullptr;
     p = head;
-    position = 0;
     while (p != nullptr) {
-        if (p->value.raceId == id) return position;
+        if (p->value.raceId == id) return &p->value;
         p = p->next;
-        position++;
     }
-    return -1;
+    return nullptr;
 }
 
 Race RacesList::deleteAt(int index) {
@@ -177,19 +174,24 @@ bool RacesList::isEmpty() const {
     return head == nullptr;
 }
 
-std::string RacesList::toString() const {
+std::string RacesList::toString(int count) const {
+    if (count > size) {
+        std::cout << "[!] No existen tantas carreras para imprimir. (Max: " << size << ")" << std::endl;
+        return "";
+    }
+    int counter = 1;
     std::stringstream aux;
     RacesLink *p;
     p = head;
-    aux << "[";
-    while (p != nullptr) {
-        aux << p->value.name << "(" << p->value.year << ")";
+    while (p != nullptr && count > 0) {
+        aux << counter << ". " << p->value.name << " (" << p->value.year << ")";
         if (p->next != nullptr) {
-            aux << ", ";
+            aux << std::endl;
         }
         p = p->next;
+        count--;
+        counter++;
     }
-    aux << "]";
     return aux.str();
 }
 

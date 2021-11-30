@@ -60,10 +60,15 @@ public:
 
     LapTime deleteAt(int);
 
+    std::vector<LapTime> toVec() const;
+
+    int getSize() const;
+
 private:
     Link *head;
     Link *tail;
     int size;
+
 };
 
 LapTimeList::LapTimeList() : head(nullptr), tail(nullptr), size(0) {}
@@ -205,6 +210,21 @@ LapTime LapTimeList::deleteAt(int index) {
     delete p;
     size--;
     return lapTime;
+}
+
+std::vector<LapTime> LapTimeList::toVec() const {
+    std::vector<LapTime> sortedDlist;
+    Link *p;
+    p = head;
+    while (p != nullptr) {
+        sortedDlist.push_back(p->value);
+        p = p->next;
+    }
+    return sortedDlist;
+}
+
+int LapTimeList::getSize() const {
+    return size;
 }
 
 
