@@ -13,19 +13,21 @@
 #ifndef INTEGRALA_APPLICATION_H
 #define INTEGRALA_APPLICATION_H
 
-#include <string>
 #include <fstream>
+#include <limits>
+#include <string>
 
 #include "CSVFile.h"
 #include "models/Extra.h"
 #include "helpers/Sorts.h"
 
 enum class IntegralType {
-    A, B
+    A,
+    B
 };
 
 class Application {
-private:
+   private:
     std::string name;
     float version;
     bool debug;
@@ -46,7 +48,7 @@ private:
 
     void loadData();
 
-public:
+   public:
     Application(const std::string &, float, bool);
 
     ~Application();
@@ -270,5 +272,4 @@ RacesList *Application::getRaces() const {
     return races;
 }
 
-
-#endif //INTEGRALA_APPLICATION_H
+#endif  //INTEGRALA_APPLICATION_H
