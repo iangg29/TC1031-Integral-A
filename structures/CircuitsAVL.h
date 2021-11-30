@@ -40,7 +40,7 @@ public:
 
     void removeChilds();
 
-    void inorder(std::stringstream &) const;
+    void inorder(std::stringstream &, int &, int &) const;
 
     void preorder(std::stringstream &) const;
 
@@ -172,17 +172,17 @@ void Node::removeChilds() {
     }
 }
 
-void Node::inorder(std::stringstream &aux) const {
-    if (left != nullptr) {
-        left->inorder(aux);
-    }
-    if (aux.tellp() != 1) {
-        aux << " ";
-    }
-    aux << "(" << value.ref << " " << level << " " << balance << ")";
-    if (right != nullptr) {
-        right->inorder(aux);
-    }
+void Node::inorder(std::stringstream &aux, int &count, int &counter) const {
+    if (count <= 0) return;
+    if (left != nullptr) left->inorder(aux, count, counter);
+    if (count <= 0) return;
+    if (aux.tellp() != 1) aux << std::endl;
+    if (count <= 0) return;
+    aux << counter << ". " << value.name << " (" << value.location << ", " << value.country << ")";
+    count--;
+    counter++;
+    if (count <= 0) return;
+    if (right != nullptr) right->inorder(aux, count, counter);
 }
 
 void Node::preorder(std::stringstream &aux) const {
@@ -302,6 +302,7 @@ Node *Node::rot_right_left(Node *a) {
 class CircuitsAVL {
 private:
     Node *root;
+    int size;
 public:
     CircuitsAVL();
 
@@ -317,12 +318,12 @@ public:
 
     void removeAll();
 
-    std::string inorder() const;
+    std::string inorder(int &) const;
 
     std::string preorder() const;
 };
 
-CircuitsAVL::CircuitsAVL() : root(nullptr) {}
+CircuitsAVL::CircuitsAVL() : root(nullptr), size(0) {}
 
 CircuitsAVL::~CircuitsAVL() {
     removeAll();
@@ -349,6 +350,7 @@ void CircuitsAVL::add(const Circuit &circuit) {
     } else {
         root = new Node(circuit);
     }
+    size++;
 }
 
 bool CircuitsAVL::find(int id) const {
@@ -392,13 +394,16 @@ void CircuitsAVL::removeAll() {
     root = nullptr;
 }
 
-std::string CircuitsAVL::inorder() const {
-    std::stringstream aux;
-    aux << "[";
-    if (!empty()) {
-        root->inorder(aux);
+std::string CircuitsAVL::inorder(int &count) const {
+    if (count > size) {
+        std::cout << "[!] No existen tantos circuitos para imprimir. (Max: " << size << ")" << std::endl;
+        return "";
     }
-    aux << "]";
+    std::stringstream aux;
+    int counter = 1;
+    if (!empty()) {
+        root->inorder(aux, count, counter);
+    }
     return aux.str();
 }
 

@@ -27,7 +27,7 @@ enum class IntegralType {
 };
 
 class Application {
-   private:
+private:
     std::string name;
     float version;
     bool debug;
@@ -48,7 +48,7 @@ class Application {
 
     void loadData();
 
-   public:
+public:
     Application(const std::string &, float, bool);
 
     ~Application();
@@ -198,10 +198,13 @@ void Application::launchCLI() {
                 std::cout << drivers->inorder(count) << std::endl;
                 break;
             }
-            case 4:
-                log("Estos son los circuitos.");
-                std::cout << getCircuits()->inorder() << std::endl;
+            case 4: {
+                int count;
+                log("¿Cuántos circuitos deseas observar?");
+                std::cin >> count;
+                std::cout << getCircuits()->inorder(count) << std::endl;
                 break;
+            }
             case 5:
                 log("Running automated tests...");
                 break;

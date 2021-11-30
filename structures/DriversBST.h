@@ -193,7 +193,7 @@ public:
     int whatLevelAmI(const Driver &) const;
 };
 
-DriversBST::DriversBST() : root(nullptr) {}
+DriversBST::DriversBST() : root(nullptr), size(0) {}
 
 bool DriversBST::isEmpty() const {
     return root == nullptr;
