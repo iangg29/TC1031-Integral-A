@@ -22,6 +22,7 @@
 #include "structures/DriversBST.h"
 #include "structures/RacesList.h"
 #include "structures/ConstructorsHash.h"
+#include "structures/Graph.h"
 
 /**
  * @brief Class that represents a CSV file.
@@ -31,6 +32,10 @@ private:
     std::string name;
 public:
     explicit CSVFile(const std::string &);
+
+    const std::string &getName() const {
+        return name;
+    }
 };
 
 /**
@@ -173,6 +178,7 @@ CircuitsAVL *CircuitsFile::exportAVL() {
         circuit.longitude = std::stol(newRecord[6]);
         circuit.altitude = std::stol(newRecord[7]);
         circuit.url = newRecord[8];
+        circuit.enabled = (newRecord[9] == "1");
 
 
         circuitsAVL->add(circuit);
@@ -429,6 +435,54 @@ ConstructorsHash<std::string, std::string> *ConstructorsFile::exportHash() {
  * @return false The file is closed.
  */
 bool ConstructorsFile::isOpen() {
+    return this->file.is_open();
+}
+
+// ------------------------------------------------
+
+/**
+ * @brief Class that represents a Graph from CSV.
+ *
+ */
+class GraphFile : public CSVFile {
+private:
+    std::ifstream file;
+
+public:
+    explicit GraphFile(const std::string &file_name);
+
+    Graph *exportGraph();
+
+    bool isOpen();
+};
+
+/**
+ * @brief Construct a new Constructors File:: Constructors File object
+ *
+ * @param file_name Nombe del archivo
+ */
+GraphFile::GraphFile(const std::string &file_name) : CSVFile(file_name) {
+    this->file.open(file_name);
+}
+
+/**
+ * @brief Exports a ConstructorsHash from CSV file.
+ *
+ * @return ConstructorsHash<std::string, std::string>*
+ */
+Graph *GraphFile::exportGraph() {
+    auto *graph = new Graph();
+    graph->loadGraphList(getName(), 41);
+    return graph;
+}
+
+/**
+ * @brief Check if the file is open.
+ *
+ * @return true The file is open.
+ * @return false The file is closed.
+ */
+bool GraphFile::isOpen() {
     return this->file.is_open();
 }
 

@@ -48,6 +48,8 @@ public:
 
     void preorder(std::stringstream &) const;
 
+    void toVec(std::vector<Circuit> &, int &);
+
     int max_depth();
 
     Node *check_tree(Circuit *, Node *, bool *);
@@ -423,7 +425,22 @@ public:
     std::string inorder(int) const;
 
     std::string preorder() const;
+
+    std::vector<Circuit> toVec() const;
 };
+
+void Node::toVec(std::vector<Circuit> &circuits, int &size) {
+    if (size <= 0) return;
+    if (left != nullptr) left->toVec(circuits, size);
+    if (size <= 0) return;
+    if (size <= 0) return;
+    if (value.enabled) {
+        circuits.push_back(value);
+        size--;
+    }
+    if (size <= 0) return;
+    if (right != nullptr) right->toVec(circuits, size);
+}
 
 /**
  * @brief Construct a new Circuits AVL:: Circuits AVL object
@@ -563,6 +580,15 @@ std::string CircuitsAVL::preorder() const {
     }
     aux << "]";
     return aux.str();
+}
+
+std::vector<Circuit> CircuitsAVL::toVec() const {
+    std::vector<Circuit> circuits;
+    int sz = size;
+    if (!empty()) {
+        root->toVec(circuits, sz);
+    }
+    return circuits;
 }
 
 #endif //INTEGRALA_CIRCUITS_AVL_H

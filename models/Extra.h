@@ -69,6 +69,7 @@ struct Circuit {
     long int longitude;
     long int altitude;
     std::string url;
+    bool enabled;
 };
 
 /**

@@ -47,6 +47,7 @@ private:
     DriversBST *drivers = nullptr;
     RacesList *races = nullptr;
     ConstructorsHash<std::string, std::string> *constructors = nullptr;
+    Graph *graph = nullptr;
 
     static void log(const std::string &);
 
@@ -93,6 +94,8 @@ public:
 
     RacesList *getRaces() const;
 
+    Graph *getGraph() const;
+
     ConstructorsHash<std::string, std::string> *getConstructors() const;
 };
 
@@ -138,6 +141,7 @@ Application::~Application() {
     delete drivers;
     delete races;
     delete constructors;
+    delete graph;
 }
 
 /**
@@ -293,8 +297,26 @@ void Application::launchCLI() {
                     std::cout << "[RESULT] " << getConstructors()->get(in) << std::endl;
                     break;
                 }
-                case 3:
+                case 3: {
+                    int inicio, final;
+                    log("Estos son los circuitos de esta temporada:");
+                    std::vector<Circuit> circuitos = getCircuits()->toVec();
+                    for (int i = 1; i < circuitos.size(); i++) {
+                        std::cout << i << " " << circuitos[i].name << std::endl;
+                    }
+
+                    log("Ingrese el numero de su circuito actual:");
+                    std::cin >> inicio;
+                    std::cout << "Se encuentra en: " << circuitos[inicio].name << std::endl;
+                    log("Ingrese el pasillo al que desea ir:");
+                    std::cin >> final;
+
+                    std::cout << "Desea ir a: " << circuitos[final].name << std::endl;
+
+                    std::cout << "Utilice el siguiente camino: " << getGraph()->DFS(inicio, final, circuitos)
+                              << std::endl;
                     break;
+                }
                 case 4: {
                     runTests();
                     break;
@@ -339,11 +361,13 @@ void Application::loadData() {
     DriversFile driversFile("./data/drivers.csv");
     RacesFile racesFile("./data/races.csv");
     ConstructorsFile constructorsFile("./data/constructors.csv");
+    GraphFile graphFile("./data/graph.txt");
     list = lapTimesFile.exportList();
     circuits = circuitsFile.exportAVL();
     drivers = driversFile.exportBST();
     races = racesFile.exportList();
     constructors = constructorsFile.exportHash();
+    graph = graphFile.exportGraph();
     setDataLoaded(true);
 }
 
@@ -504,6 +528,10 @@ void Application::runTests() {
     std::cout << "[!] Successfully ran test cases. (Took " << (finishTime - startTime) << " ms)"
               << std::endl;
     std::cout << std::endl;
+}
+
+Graph *Application::getGraph() const {
+    return graph;
 }
 
 #endif  //INTEGRALA_APPLICATION_H
