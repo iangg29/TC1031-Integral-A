@@ -20,115 +20,124 @@
 
 #include "../models/Extra.h"
 
-const int SIZE = 300;
-
+template<class Key, class Value>
 class ConstructorsHash {
 private:
-    unsigned int (*func)(const std::string);
+    unsigned int (*func)(const Key);
 
     unsigned int size;
     unsigned int count;
-    std::string *keys[SIZE];
-    std::string initialValue;
-    Constructor *values[SIZE];
 
-    long indexOf(std::string) const;
+    Key *keys;
+    Key initialValue;
+    Value *values;
+
+    long indexOf(const Key) const;
 
 public:
-    ConstructorsHash(unsigned int, std::string, unsigned int (*)(const std::string));
+    ConstructorsHash(unsigned int, Key, unsigned int (*)(const Key));
 
     ~ConstructorsHash();
 
     bool full() const;
 
-    bool put(std::string, Constructor);
+    bool put(Key, Value);
 
-    bool contains(std::string) const;
+    bool contains(Key) const;
 
-    Constructor *get(const std::string &) const;
+    Value get(const Key);
 
-    std::string toString() const;
+    std::string toString();
 };
 
-ConstructorsHash::ConstructorsHash(unsigned int size, std::string initial,
-                                   unsigned int (*func)(const std::string)) {
-    this->size = SIZE;
-    this->initialValue = initial;
-    for (unsigned int i = 0; i < SIZE; ++i) {
-        this->keys[i] = &initial;
+template<class Key, class Value>
+ConstructorsHash<Key, Value>::ConstructorsHash(unsigned int size, Key initialValue, unsigned int (*func)(const Key)) {
+    this->size = size;
+    this->keys = new Key[size];
+    if (keys == nullptr) std::cout << "[!] No memory." << std::endl;
+    this->initialValue = initialValue;
+    for (int i = 0; i < size; ++i) {
+        this->keys[i] = initialValue;
     }
-    for (int i = 0; i < SIZE; ++i) {
-        this->values[i] = nullptr;
+    values = new Value[size];
+    if (values == nullptr) std::cout << "[!] No memory." << std::endl;
+    for (int i = 0; i < size; ++i) {
+        this->values[i] = -1;
     }
     this->func = func;
     this->count = 0;
 }
 
-ConstructorsHash::~ConstructorsHash() {
-    for (auto n: keys) {
-        delete n;
-    }
-    for (auto n: values) {
-        delete n;
-    }
+template<class Key, class Value>
+ConstructorsHash<Key, Value>::~ConstructorsHash() {
+    delete[] keys;
+    delete[] values;
+    keys = nullptr;
+    values = nullptr;
     func = nullptr;
     size = 0;
     count = 0;
 }
 
-bool ConstructorsHash::full() const {
+template<class Key, class Value>
+bool ConstructorsHash<Key, Value>::full() const {
     return count > size;
 }
 
-long ConstructorsHash::indexOf(const std::string key) const {
+template<class Key, class Value>
+long ConstructorsHash<Key, Value>::indexOf(const Key key) const {
     unsigned int i, start;
     start = i = func(key) % size;
-    for (int j = 0; j < size; ++j) {
-        if (keys[i] == &key) return i;
+    for (int j = 0; j < size; j++) {
+        if (keys[i] == key) return i;
         i = (start + j * j) % size;
     }
     return -1;
 }
 
-bool ConstructorsHash::put(std::string key, Constructor value) {
-    unsigned i, start;
-    long position;
+template<class Key, class Value>
+bool ConstructorsHash<Key, Value>::put(Key key, Value value) {
+    unsigned int i, start;
+    long int position;
     position = indexOf(key);
     if (position != -1) {
-        values[position] = &value;
+        values[position] = value;
         return true;
     }
     start = i = func(key) % size;
     for (int j = 0; j < size; ++j) {
-        if (keys[i] == &initialValue) {
-            keys[i] = &key;
-            values[i] = &value;
+        if (keys[i] == initialValue) {
+            keys[i] = key;
+            values[i] = value;
+            return true;
         }
         i = (start + j * j) % size;
     }
     return false;
 }
 
-bool ConstructorsHash::contains(const std::string key) const {
+template<class Key, class Value>
+Value ConstructorsHash<Key, Value>::get(const Key key) {
+    long int position = indexOf(key);
+    if (position != -1) return values[position];
+    return 0;
+}
+
+template<class Key, class Value>
+bool ConstructorsHash<Key, Value>::contains(Key key) const {
     return indexOf(key) != -1;
 }
 
-Constructor *ConstructorsHash::get(const std::string &key) const {
-    long position = indexOf(key);
-    if (position != -1) return values[position];
-    return nullptr;
-}
-
-std::string ConstructorsHash::toString() const {
+template<class Key, class Value>
+std::string ConstructorsHash<Key, Value>::toString() {
     std::stringstream aux;
-    for (int i = 0; i < size; ++i) {
-        if (keys[i] != &initialValue) {
+    for (int i = 0; i < size; i++) {
+        if (keys[i] != initialValue) {
             aux << "(" << i << " ";
-            aux << keys[i] << " : " << values[i]->name << ") ";
+            aux << keys[i] << " : " << values[i] << ") ";
         }
     }
     return aux.str();
 }
-
 
 #endif //INTEGRALA_CONSTRUCTORS_HASH_H

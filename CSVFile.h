@@ -278,7 +278,7 @@ private:
 public:
     explicit ConstructorsFile(const std::string &file_name);
 
-    ConstructorsHash *exportHash();
+    ConstructorsHash<std::string, std::string> *exportHash();
 
     bool isOpen();
 };
@@ -287,9 +287,9 @@ ConstructorsFile::ConstructorsFile(const std::string &file_name) : CSVFile(file_
     this->file.open(file_name);
 }
 
-ConstructorsHash *ConstructorsFile::exportHash() {
-    auto *constructorsHash = new ConstructorsHash(300, std::string("empty"),
-                                                  constructorsHashFunc);
+ConstructorsHash<std::string, std::string> *ConstructorsFile::exportHash() {
+    auto *constructorsHash = new ConstructorsHash<std::string, std::string>(211, std::string("empty"),
+                                                                            constructorsHashFunc);
     int count = 0;
     if (!isOpen()) {
         std::cout << "NO ABRE EL ARCHIVO" << std::endl;
@@ -313,7 +313,7 @@ ConstructorsHash *ConstructorsFile::exportHash() {
         constructor.nationality = newRecord[3];
         constructor.url = newRecord[4];
 
-        constructorsHash->put(newRecord[1], constructor);
+        constructorsHash->put(constructor.ref, constructor.url);
         newRecord.clear();
     }
     return constructorsHash;

@@ -40,7 +40,7 @@ private:
     CircuitsAVL *circuits = nullptr;
     DriversBST *drivers = nullptr;
     RacesList *races = nullptr;
-    ConstructorsHash *constructors = nullptr;
+    ConstructorsHash<std::string, std::string> *constructors = nullptr;
 
     static void log(const std::string &);
 
@@ -87,7 +87,7 @@ public:
 
     RacesList *getRaces() const;
 
-    ConstructorsHash *getConstructors() const;
+    ConstructorsHash<std::string, std::string> *getConstructors() const;
 };
 
 Application::Application(const std::string &name, float version, bool debug) {
@@ -233,8 +233,14 @@ void Application::launchCLI() {
                     break;
                 }
                 case 2: {
+                    std::string in;
                     log("¿Qué escudería te gustaría observar?");
-                    std::cout << getConstructors()->toString() << std::endl;
+                    std::cin >> in;
+                    if (!getConstructors()->contains(in)) {
+                        log("No es posible encontrar esa escudería.");
+                        break;
+                    }
+                    std::cout << "[RESULT] " << getConstructors()->get(in) << std::endl;
                     break;
                 }
                 case 3:
@@ -267,10 +273,12 @@ void Application::loadData() {
     CircuitsFile circuitsFile("./data/circuits.csv");
     DriversFile driversFile("./data/drivers.csv");
     RacesFile racesFile("./data/races.csv");
+    ConstructorsFile constructorsFile("./data/constructors.csv");
     list = lapTimesFile.exportList();
     circuits = circuitsFile.exportAVL();
     drivers = driversFile.exportBST();
     races = racesFile.exportList();
+    constructors = constructorsFile.exportHash();
     setDataLoaded(true);
 }
 
@@ -323,7 +331,7 @@ void Application::assertResult(std::string &result, std::string &expected) {
     }
 }
 
-ConstructorsHash *Application::getConstructors() const {
+ConstructorsHash<std::string, std::string> *Application::getConstructors() const {
     return constructors;
 }
 
@@ -361,7 +369,12 @@ void Application::runTests() {
     log("-- Grafos");
     // TODO: Graphs test cases.
     log("-- Hashes");
-    // TODO: Hashes test cases.
+    result = getConstructors()->get("\"mercedes\"");
+    expected = "\"http://en.wikipedia.org/wiki/Mercedes-Benz_in_Formula_One\"";
+    assertResult(result, expected);
+    result = getConstructors()->get("\"red_bull\"");
+    expected = "\"http://en.wikipedia.org/wiki/Red_Bull_Racing\"";
+    assertResult(result, expected);
     log("-- AVL");
     result = getCircuits()->inorder(5);
     expected = "\n1. \"Albert Park Grand Prix Circuit\" (\"Melbourne\", \"Australia\")\n2. \"Sepang International Circuit\" (\"Kuala Lumpur\", \"Malaysia\")\n3. \"Bahrain International Circuit\" (\"Sakhir\", \"Bahrain\")\n4. \"Circuit de Barcelona-Catalunya\" (\"Montmeló\", \"Spain\")\n5. \"Istanbul Park\" (\"Istanbul\", \"Turkey\")";
