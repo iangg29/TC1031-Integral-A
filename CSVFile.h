@@ -21,6 +21,7 @@
 #include "structures/CircuitsAVL.h"
 #include "structures/DriversBST.h"
 #include "structures/RacesList.h"
+#include "structures/ConstructorsHash.h"
 
 class CSVFile {
 private:
@@ -256,6 +257,69 @@ RacesList *RacesFile::exportList() {
 }
 
 bool RacesFile::isOpen() {
+    return this->file.is_open();
+}
+
+// ------------------------------------------------
+
+unsigned int constructorsHashFunc(const std::string s) {
+    unsigned int acum = 0;
+    for (unsigned int i = 0; i < s.size(); i++) {
+        acum += (int) s[i];
+    }
+    return acum;
+}
+
+
+class ConstructorsFile : public CSVFile {
+private:
+    std::ifstream file;
+
+public:
+    explicit ConstructorsFile(const std::string &file_name);
+
+    ConstructorsHash *exportHash();
+
+    bool isOpen();
+};
+
+ConstructorsFile::ConstructorsFile(const std::string &file_name) : CSVFile(file_name) {
+    this->file.open(file_name);
+}
+
+ConstructorsHash *ConstructorsFile::exportHash() {
+    auto *constructorsHash = new ConstructorsHash(300, std::string("empty"),
+                                                  constructorsHashFunc);
+    int count = 0;
+    if (!isOpen()) {
+        std::cout << "NO ABRE EL ARCHIVO" << std::endl;
+        exit(EXIT_FAILURE);
+    }
+    std::vector<std::string> pj;
+    std::string line, word;
+    while (std::getline(this->file, line)) {
+        count++;
+        if (count == 1) continue;
+        std::stringstream s(line);
+        Constructor constructor;
+        std::vector<std::string> newRecord;
+
+        while (std::getline(s, word, ',')) {
+            newRecord.push_back(word);
+        }
+        constructor.constructorId = std::stoi(newRecord[0]);
+        constructor.ref = newRecord[1];
+        constructor.name = newRecord[2];
+        constructor.nationality = newRecord[3];
+        constructor.url = newRecord[4];
+
+        constructorsHash->put(newRecord[1], constructor);
+        newRecord.clear();
+    }
+    return constructorsHash;
+}
+
+bool ConstructorsFile::isOpen() {
     return this->file.is_open();
 }
 

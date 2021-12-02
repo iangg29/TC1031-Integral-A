@@ -62,8 +62,6 @@ public:
 
     std::vector<LapTime> toVec() const;
 
-    int getSize() const;
-
 private:
     Link *head;
     Link *tail;
@@ -221,10 +219,6 @@ std::vector<LapTime> LapTimeList::toVec() const {
         p = p->next;
     }
     return sortedDlist;
-}
-
-int LapTimeList::getSize() const {
-    return size;
 }
 
 

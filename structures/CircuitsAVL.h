@@ -318,7 +318,7 @@ public:
 
     void removeAll();
 
-    std::string inorder(int &) const;
+    std::string inorder(int) const;
 
     std::string preorder() const;
 };
@@ -394,7 +394,7 @@ void CircuitsAVL::removeAll() {
     root = nullptr;
 }
 
-std::string CircuitsAVL::inorder(int &count) const {
+std::string CircuitsAVL::inorder(int count) const {
     if (count > size) {
         std::cout << "[!] No existen tantos circuitos para imprimir. (Max: " << size << ")" << std::endl;
         return "";

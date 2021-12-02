@@ -59,4 +59,12 @@ struct Circuit {
     std::string url;
 };
 
+struct Constructor {
+    unsigned int constructorId;
+    std::string ref;
+    std::string name;
+    std::string nationality;
+    std::string url;
+};
+
 #endif //INTEGRALA_EXTRA_H

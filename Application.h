@@ -40,16 +40,19 @@ private:
     CircuitsAVL *circuits = nullptr;
     DriversBST *drivers = nullptr;
     RacesList *races = nullptr;
+    ConstructorsHash *constructors = nullptr;
 
     static void log(const std::string &);
 
-    static void menu();
+    void menu();
 
     void launchCLI();
 
     void loadData();
 
-    static void assertResult(std::string &, std::string &);
+    void runTests();
+
+    void assertResult(std::string &, std::string &);
 
 public:
     Application(const std::string &, float, bool);
@@ -74,7 +77,7 @@ public:
 
     void setStarted(bool appStarted);
 
-    IntegralType getIntegralType() const;
+    IntegralType getIntegralType();
 
     LapTimeList *getList() const;
 
@@ -83,6 +86,8 @@ public:
     DriversBST *getDrivers() const;
 
     RacesList *getRaces() const;
+
+    ConstructorsHash *getConstructors() const;
 };
 
 Application::Application(const std::string &name, float version, bool debug) {
@@ -115,6 +120,7 @@ Application::~Application() {
     delete circuits;
     delete drivers;
     delete races;
+    delete constructors;
 }
 
 void Application::init() {
@@ -149,12 +155,17 @@ void Application::log(const std::string &message) {
 void Application::menu() {
     log("---- MENU ----");
     log("Selecciona una opción:");
-    log("1. Tiempos de vuelta");
-    log("2. Carreras");
-    log("3. Pilotos");
-    log("4. Circuitos");
-    log("5. Run automated tests");
-    log("6. Salir");
+    if (getIntegralType() == IntegralType::A) {
+        log("1. Tiempos de vuelta");
+        log("2. Carreras");
+        log("3. Pilotos");
+    } else {
+        log("1. Circuitos");
+        log("2. Escuderías");
+        log("3. Grafos");
+    }
+    log("4. Run automated tests");
+    log("5. Salir");
     log("--------------");
 }
 
@@ -168,96 +179,77 @@ void Application::launchCLI() {
             std::cin.clear();
             std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
         }
-        switch (option) {
-            case 1: {
-                int count;
-                Sorts sort;
-                log("¿Cuántos tiempos de vuelta ordenados deseas observar?");
-                std::cin >> count;
-                std::vector<LapTime> laps = getList()->toVec(), cleaned;
-                sort.mergeSort(laps);
-                for (auto &lap: laps) {
-                    if (lap.time.empty()) continue;
-                    cleaned.push_back(lap);
+        if (getIntegralType() == IntegralType::A) {
+            switch (option) {
+                case 1: {
+                    int count;
+                    Sorts sort;
+                    log("¿Cuántos tiempos de vuelta ordenados deseas observar?");
+                    std::cin >> count;
+                    std::vector<LapTime> laps = getList()->toVec(), cleaned;
+                    sort.mergeSort(laps);
+                    for (auto &lap: laps) {
+                        if (lap.time.empty()) continue;
+                        cleaned.push_back(lap);
+                    }
+                    for (int i = 0; i < count; ++i) {
+                        std::cout << "[" << getRaces()->search(cleaned[i].raceId)->name << "] x ["
+                                  << getDrivers()->find(cleaned[i].driverId)->code << "] " << cleaned[i].time
+                                  << std::endl;
+                    }
+                    break;
                 }
-                for (int i = 0; i < count; ++i) {
-                    std::cout << "[" << getRaces()->search(cleaned[i].raceId)->name << "] x ["
-                              << getDrivers()->find(cleaned[i].driverId)->code << "] " << cleaned[i].time
-                              << std::endl;
+                case 2: {
+                    int count;
+                    log("¿Cuántas carreras deseas observar?");
+                    std::cin >> count;
+                    std::cout << getRaces()->toString(count) << std::endl;
+                    break;
                 }
-                break;
-            }
-            case 2: {
-                int count;
-                log("¿Cuántas carreras deseas observar?");
-                std::cin >> count;
-                std::cout << getRaces()->toString(count) << std::endl;
-                break;
-            }
-            case 3: {
-                int count;
-                log("¿Cuántos pilotos deseas observar?");
-                std::cin >> count;
-                std::cout << drivers->inorder(count) << std::endl;
-                break;
-            }
-            case 4: {
-                int count;
-                log("¿Cuántos circuitos deseas observar?");
-                std::cin >> count;
-                std::cout << getCircuits()->inorder(count) << std::endl;
-                break;
-            }
-            case 5: {
-                unsigned int startTime, finishTime;
-                startTime = std::chrono::duration_cast<std::chrono::milliseconds>(
-                        std::chrono::system_clock::now().time_since_epoch()).count();
-                std::cout << std::endl;
-                log("Running automated tests...");
-                log("[!] INTEGRAL A");
-                log("-- Algoritmos de ordenamiento");
-                std::string result, expected;
-                std::vector<LapTime> laps = getList()->toVec(), cleaned;
-                Sorts sorts;
-                sorts.mergeSort(laps);
-                for (auto &lap: laps) {
-                    if (lap.time.empty()) continue;
-                    cleaned.push_back(lap);
+                case 3: {
+                    int count;
+                    log("¿Cuántos pilotos deseas observar?");
+                    std::cin >> count;
+                    std::cout << drivers->inorder(count) << std::endl;
+                    break;
                 }
-                for (int i = 0; i < 5; ++i) {
-                    result.append("[" + getRaces()->search(cleaned[i].raceId)->name + "] x [" +
-                                  getDrivers()->find(cleaned[i].driverId)->code + "] " + cleaned[i].time + "\n");
-                }
-                expected = "[\"Sakhir Grand Prix\"] x [\"RUS\"] \"0:55.404\"\n[\"Sakhir Grand Prix\"] x [\"RUS\"] \"0:56.319\"\n[\"Sakhir Grand Prix\"] x [\"RUS\"] \"0:56.393\"\n[\"Sakhir Grand Prix\"] x [\"RUS\"] \"0:56.442\"\n[\"Sakhir Grand Prix\"] x [\"RUS\"] \"0:56.499\"\n";
-                assertResult(result, expected);
-                log("-- Estructuras lineales");
-                result = getRaces()->toString(5);
-                expected = "1. \"Australian Grand Prix\" (2009)\n2. \"Malaysian Grand Prix\" (2009)\n3. \"Chinese Grand Prix\" (2009)\n4. \"Bahrain Grand Prix\" (2009)\n5. \"Spanish Grand Prix\" (2009)\n";
-                assertResult(result, expected);
-                log("-- Árboles");
-                result = getDrivers()->inorder(5);
-                expected = "\n1. \"Lewis\" \"Hamilton\" [\"HAM\"] #44\n2. \"Nick\" \"Heidfeld\" [\"HEI\"]\n3. \"Nico\" \"Rosberg\" [\"ROS\"] #6\n4. \"Fernando\" \"Alonso\" [\"ALO\"] #14\n5. \"Heikki\" \"Kovalainen\" [\"KOV\"]";
-                assertResult(result, expected);
-                log("[!] INTEGRAL B");
-                log("-- Grafos");
-                // TODO: Graphs test cases.
-                log("-- Hashes");
-                // TODO: Hashes test cases.
-                log("-- AVL");
-                // TODO: AVL test cases.
-                finishTime = std::chrono::duration_cast<std::chrono::milliseconds>(
-                        std::chrono::system_clock::now().time_since_epoch()).count();
-                std::cout << "[!] Successfully ran test cases. (Took " << (finishTime - startTime) << " ms)"
-                          << std::endl;
-                std::cout << std::endl;
-                break;
+                case 4:
+                    runTests();
+                    break;
+                case 5:
+                    end();
+                    break;
+                default:
+                    log("Opción inválida.");
+                    break;
             }
-            case 6:
-                end();
-                break;
-            default:
-                log("Opción inválida.");
-                break;
+        } else {
+            switch (option) {
+                case 1: {
+                    int count;
+                    log("¿Cuántos circuitos deseas observar?");
+                    std::cin >> count;
+                    std::cout << getCircuits()->inorder(count) << std::endl;
+                    break;
+                }
+                case 2: {
+                    log("¿Qué escudería te gustaría observar?");
+                    std::cout << getConstructors()->toString() << std::endl;
+                    break;
+                }
+                case 3:
+                    break;
+                case 4: {
+                    runTests();
+                    break;
+                }
+                case 5:
+                    end();
+                    break;
+                default:
+                    log("Opción inválida.");
+                    break;
+            }
         }
     } while (isStarted() && isDataLoaded());
 }
@@ -311,7 +303,7 @@ DriversBST *Application::getDrivers() const {
     return drivers;
 }
 
-IntegralType Application::getIntegralType() const {
+IntegralType Application::getIntegralType() {
     return integralType;
 }
 
@@ -325,6 +317,60 @@ void Application::assertResult(std::string &result, std::string &expected) {
     } else {
         log("[RESULT] FAILED (Result and Expected do not match).");
     }
+    if (isDebug()) {
+        std::cout << "[DEBUG] ESPERADA:" << std::endl << expected << std::endl;
+        std::cout << "[DEBUG] PROGRAMA:" << std::endl << result << std::endl;
+    }
+}
+
+ConstructorsHash *Application::getConstructors() const {
+    return constructors;
+}
+
+void Application::runTests() {
+    unsigned int startTime, finishTime;
+    startTime = std::chrono::duration_cast<std::chrono::milliseconds>(
+            std::chrono::system_clock::now().time_since_epoch()).count();
+    std::cout << std::endl;
+    log("Running automated tests...");
+    log("[!] INTEGRAL A");
+    log("-- Algoritmos de ordenamiento");
+    std::string result, expected;
+    std::vector<LapTime> laps = getList()->toVec(), cleaned;
+    Sorts sorts;
+    sorts.mergeSort(laps);
+    for (auto &lap: laps) {
+        if (lap.time.empty()) continue;
+        cleaned.push_back(lap);
+    }
+    for (int i = 0; i < 5; ++i) {
+        result.append("[" + getRaces()->search(cleaned[i].raceId)->name + "] x [" +
+                      getDrivers()->find(cleaned[i].driverId)->code + "] " + cleaned[i].time + "\n");
+    }
+    expected = "[\"Sakhir Grand Prix\"] x [\"RUS\"] \"0:55.404\"\n[\"Sakhir Grand Prix\"] x [\"RUS\"] \"0:56.319\"\n[\"Sakhir Grand Prix\"] x [\"RUS\"] \"0:56.393\"\n[\"Sakhir Grand Prix\"] x [\"RUS\"] \"0:56.442\"\n[\"Sakhir Grand Prix\"] x [\"RUS\"] \"0:56.499\"\n";
+    assertResult(result, expected);
+    log("-- Estructuras lineales");
+    result = getRaces()->toString(5);
+    expected = "1. \"Australian Grand Prix\" (2009)\n2. \"Malaysian Grand Prix\" (2009)\n3. \"Chinese Grand Prix\" (2009)\n4. \"Bahrain Grand Prix\" (2009)\n5. \"Spanish Grand Prix\" (2009)\n";
+    assertResult(result, expected);
+    log("-- Árboles");
+    result = getDrivers()->inorder(5);
+    expected = "\n1. \"Lewis\" \"Hamilton\" [\"HAM\"] #44\n2. \"Nick\" \"Heidfeld\" [\"HEI\"]\n3. \"Nico\" \"Rosberg\" [\"ROS\"] #6\n4. \"Fernando\" \"Alonso\" [\"ALO\"] #14\n5. \"Heikki\" \"Kovalainen\" [\"KOV\"]";
+    assertResult(result, expected);
+    log("[!] INTEGRAL B");
+    log("-- Grafos");
+    // TODO: Graphs test cases.
+    log("-- Hashes");
+    // TODO: Hashes test cases.
+    log("-- AVL");
+    result = getCircuits()->inorder(5);
+    expected = "\n1. \"Albert Park Grand Prix Circuit\" (\"Melbourne\", \"Australia\")\n2. \"Sepang International Circuit\" (\"Kuala Lumpur\", \"Malaysia\")\n3. \"Bahrain International Circuit\" (\"Sakhir\", \"Bahrain\")\n4. \"Circuit de Barcelona-Catalunya\" (\"Montmeló\", \"Spain\")\n5. \"Istanbul Park\" (\"Istanbul\", \"Turkey\")";
+    assertResult(result, expected);
+    finishTime = std::chrono::duration_cast<std::chrono::milliseconds>(
+            std::chrono::system_clock::now().time_since_epoch()).count();
+    std::cout << "[!] Successfully ran test cases. (Took " << (finishTime - startTime) << " ms)"
+              << std::endl;
+    std::cout << std::endl;
 }
 
 #endif  //INTEGRALA_APPLICATION_H
