@@ -21,6 +21,10 @@
 
 class RacesList;
 
+/**
+ * @brief RacesLink class.
+ * 
+ */
 class RacesLink {
 private:
     explicit RacesLink(Race);
@@ -33,10 +37,24 @@ private:
     friend class RacesList;
 };
 
+/**
+ * @brief Construct a new Races Link:: Races Link object
+ * 
+ * @param race Race object.
+ */
 RacesLink::RacesLink(Race race) : value(std::move(race)), next(nullptr) {}
 
+/**
+ * @brief Construct a new Races Link:: Races Link object
+ * 
+ * @param race Race object.
+ * @param nxt Next node.
+ */
 RacesLink::RacesLink(Race race, RacesLink *nxt) : value(std::move(race)), next(nxt) {}
 
+/**
+ * @brief RacesList class.
+ */
 class RacesList {
 public:
     RacesList();
@@ -66,12 +84,24 @@ private:
     int size;
 };
 
+/**
+ * @brief Construct a new Races List:: Races List object
+ * 
+ */
 RacesList::RacesList() : head(nullptr), size(0) {}
 
+/**
+ * @brief Destroy the Races List:: Races List object
+ * 
+ */
 RacesList::~RacesList() {
     clear();
 }
 
+/**
+ * @brief Clear the entire list.
+ * 
+ */
 void RacesList::clear() {
     RacesLink *p, *q;
     p = head;
@@ -84,6 +114,11 @@ void RacesList::clear() {
     size = 0;
 }
 
+/**
+ * @brief Add a new Node at the beginning of the list.
+ * 
+ * @param race
+ */
 void RacesList::addFirst(Race race) {
     RacesLink *newLink;
     newLink = new RacesLink(std::move(race));
@@ -92,6 +127,11 @@ void RacesList::addFirst(Race race) {
     size++;
 }
 
+/**
+ * @brief Insert a new Node to the list.
+ * 
+ * @param race 
+ */
 void RacesList::insert(const Race &race) {
     RacesLink *newLink, *p;
     newLink = new RacesLink(race);
@@ -108,6 +148,12 @@ void RacesList::insert(const Race &race) {
     size++;
 }
 
+/**
+ * @brief Updates a node within the list.
+ * 
+ * @param index Índice a actualizar
+ * @param race Nuevo valor del nodo
+ */
 void RacesList::update(int index, Race race) {
     int position;
     RacesLink *p;
@@ -123,6 +169,12 @@ void RacesList::update(int index, Race race) {
     p->value = std::move(race);
 }
 
+/**
+ * @brief Search a node within the list.
+ * 
+ * @param id ID a buscar
+ * @return Race* 
+ */
 Race *RacesList::search(unsigned int id) const {
     RacesLink *p;
     if (isEmpty()) return nullptr;
@@ -134,6 +186,12 @@ Race *RacesList::search(unsigned int id) const {
     return nullptr;
 }
 
+/**
+ * @brief Delete a node with certain index.
+ * 
+ * @param index Index of the node to delete.
+ * @return Race 
+ */
 Race RacesList::deleteAt(int index) {
     RacesLink *p, *q;
     int position;
@@ -157,6 +215,11 @@ Race RacesList::deleteAt(int index) {
     return race;
 }
 
+/**
+ * @brief Delete the first node of the list.
+ * 
+ * @return Race 
+ */
 Race RacesList::deleteFirst() {
     RacesLink *p;
     if (isEmpty()) {
@@ -170,10 +233,22 @@ Race RacesList::deleteFirst() {
     return race;
 }
 
+/**
+ * @brief Check if the list is empty.
+ * 
+ * @return true The list is empty.
+ * @return false The list is not empty.
+ */
 bool RacesList::isEmpty() const {
     return head == nullptr;
 }
 
+/**
+ * @brief Convert the list to a string.
+ * 
+ * @param count Cuantos nodos a mostrar.
+ * @return std::string 
+ */
 std::string RacesList::toString(int count) const {
     if (count > size) {
         std::cout << "[!] No existen tantas carreras para imprimir. (Max: " << size << ")" << std::endl;

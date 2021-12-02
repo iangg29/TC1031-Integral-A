@@ -15,6 +15,9 @@
 
 Application *application = nullptr;
 
+/**
+ * @brief Iniciador de la aplicación.
+ */
 int main() {
     application = new Application("Formula 1 Statistics", 0.1, true);
     application->init();

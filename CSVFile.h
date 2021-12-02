@@ -23,6 +23,9 @@
 #include "structures/RacesList.h"
 #include "structures/ConstructorsHash.h"
 
+/**
+ * @brief Class that represents a CSV file.
+ */
 class CSVFile {
 private:
     std::string name;
@@ -30,12 +33,20 @@ public:
     explicit CSVFile(const std::string &);
 };
 
+/**
+ * @brief Construct a new CSVFile::CSVFile object
+ * 
+ * @param file_name Nombre del archivo CSV
+ */
 CSVFile::CSVFile(const std::string &file_name) {
     this->name = file_name;
 }
 
 // ------------------------------------------------
 
+/**
+ * @brief Class that represents a LapTime CSV.
+ */
 class LapTimesFile : public CSVFile {
 private:
     std::ifstream file;
@@ -48,10 +59,20 @@ public:
     bool isOpen();
 };
 
+/**
+ * @brief Construct a new Lap Times File:: Lap Times File object
+ * 
+ * @param file_name Nombre del archivo CSV
+ */
 LapTimesFile::LapTimesFile(const std::string &file_name) : CSVFile(file_name) {
     this->file.open(file_name);
 }
 
+/**
+ * @brief Export a list of LapTimes from the CSV file.
+ * 
+ * @return LapTimeList* 
+ */
 LapTimeList *LapTimesFile::exportList() {
     auto *lapTimeList = new LapTimeList;
     int count = 0;
@@ -82,12 +103,21 @@ LapTimeList *LapTimesFile::exportList() {
     return lapTimeList;
 }
 
+/**
+ * @brief Check if the file is open.
+ * 
+ * @return true The file is open.
+ * @return false The file is closed.
+ */
 bool LapTimesFile::isOpen() {
     return this->file.is_open();
 }
 
 // ------------------------------------------------
 
+/**
+ * @brief Class that represents a Drivers CSV.
+ */
 class CircuitsFile : public CSVFile {
 private:
     std::ifstream file;
@@ -100,10 +130,20 @@ public:
     bool isOpen();
 };
 
+/**
+ * @brief Construct a new Circuits File:: Circuits File object
+ * 
+ * @param file_name Nombre del archivo CSV
+ */
 CircuitsFile::CircuitsFile(const std::string &file_name) : CSVFile(file_name) {
     this->file.open(file_name);
 }
 
+/**
+ * @brief Export a AVL of Circuits from the CSV file.
+ * 
+ * @return CircuitsAVL* 
+ */
 CircuitsAVL *CircuitsFile::exportAVL() {
     auto *circuitsAVL = new CircuitsAVL;
     int count = 0;
@@ -141,12 +181,21 @@ CircuitsAVL *CircuitsFile::exportAVL() {
     return circuitsAVL;
 }
 
+/**
+ * @brief Check if the file is open.
+ * 
+ * @return true The file is open.
+ * @return false The file is closed.
+ */
 bool CircuitsFile::isOpen() {
     return this->file.is_open();
 }
 
 // ------------------------------------------------
 
+/**
+ * @brief Class that represents a Drivers CSV.
+ */
 class DriversFile : public CSVFile {
 private:
     std::ifstream file;
@@ -159,10 +208,20 @@ public:
     bool isOpen();
 };
 
+/**
+ * @brief Construct a new Drivers File:: Drivers File object
+ * 
+ * @param file_name Nombre del archivo CSV
+ */
 DriversFile::DriversFile(const std::string &file_name) : CSVFile(file_name) {
     this->file.open(file_name);
 }
 
+/**
+ * @brief Export a BST of Drivers from the CSV file.
+ * 
+ * @return DriversBST* 
+ */
 DriversBST *DriversFile::exportBST() {
     auto *driversBST = new DriversBST;
     int count = 0;
@@ -199,12 +258,21 @@ DriversBST *DriversFile::exportBST() {
     return driversBST;
 }
 
+/**
+ * @brief Check if the file is open.
+ * 
+ * @return true The file is open.
+ * @return false The file is closed.
+ */
 bool DriversFile::isOpen() {
     return this->file.is_open();
 }
 
 // ------------------------------------------------
 
+/**
+ * @brief Class that represents a RaceFile CSV.
+ */
 class RacesFile : public CSVFile {
 private:
     std::ifstream file;
@@ -217,10 +285,20 @@ public:
     bool isOpen();
 };
 
+/**
+ * @brief Construct a new Races File:: Races File object
+ * 
+ * @param file_name Nombre del archivo
+ */
 RacesFile::RacesFile(const std::string &file_name) : CSVFile(file_name) {
     this->file.open(file_name);
 }
 
+/**
+ * @brief Exports a RaceList from CSV file.
+ * 
+ * @return RacesList* 
+ */
 RacesList *RacesFile::exportList() {
     auto *racesList = new RacesList;
     int count = 0;
@@ -256,12 +334,24 @@ RacesList *RacesFile::exportList() {
     return racesList;
 }
 
+/**
+ * @brief Check if the file is open.
+ * 
+ * @return true The file is open.
+ * @return false The file is closed.
+ */
 bool RacesFile::isOpen() {
     return this->file.is_open();
 }
 
 // ------------------------------------------------
 
+/**
+ * @brief Function that allows hashing a string.
+ * 
+ * @param s String to hash.
+ * @return unsigned int 
+ */
 unsigned int constructorsHashFunc(const std::string s) {
     unsigned int acum = 0;
     for (unsigned int i = 0; i < s.size(); i++) {
@@ -270,7 +360,10 @@ unsigned int constructorsHashFunc(const std::string s) {
     return acum;
 }
 
-
+/**
+ * @brief Class that represents a Constructors CSV.
+ * 
+ */
 class ConstructorsFile : public CSVFile {
 private:
     std::ifstream file;
@@ -283,10 +376,20 @@ public:
     bool isOpen();
 };
 
+/**
+ * @brief Construct a new Constructors File:: Constructors File object
+ * 
+ * @param file_name Nombe del archivo
+ */
 ConstructorsFile::ConstructorsFile(const std::string &file_name) : CSVFile(file_name) {
     this->file.open(file_name);
 }
 
+/**
+ * @brief Exports a ConstructorsHash from CSV file.
+ * 
+ * @return ConstructorsHash<std::string, std::string>* 
+ */
 ConstructorsHash<std::string, std::string> *ConstructorsFile::exportHash() {
     auto *constructorsHash = new ConstructorsHash<std::string, std::string>(211, std::string("empty"),
                                                                             constructorsHashFunc);
@@ -319,6 +422,12 @@ ConstructorsHash<std::string, std::string> *ConstructorsFile::exportHash() {
     return constructorsHash;
 }
 
+/**
+ * @brief Check if the file is open.
+ * 
+ * @return true The file is open.
+ * @return false The file is closed.
+ */
 bool ConstructorsFile::isOpen() {
     return this->file.is_open();
 }

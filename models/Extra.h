@@ -15,6 +15,9 @@
 
 #include <string>
 
+/**
+ * @brief LapTime structure.
+ */
 struct LapTime {
     unsigned int raceId;
     unsigned int driverId;
@@ -24,6 +27,9 @@ struct LapTime {
     long int milli;
 };
 
+/**
+ * @brief Race structure.
+ */
 struct Race {
     unsigned int raceId;
     int year;
@@ -35,6 +41,9 @@ struct Race {
     std::string url;
 };
 
+/**
+ * @brief Driver structure.
+ */
 struct Driver {
     unsigned int driverId;
     std::string ref;
@@ -47,6 +56,9 @@ struct Driver {
     std::string url;
 };
 
+/**
+ * @brief Circuit structure.
+ */
 struct Circuit {
     unsigned int circuitId;
     std::string ref;
@@ -59,6 +71,9 @@ struct Circuit {
     std::string url;
 };
 
+/**
+ * @brief Constructor structure.
+ */
 struct Constructor {
     unsigned int constructorId;
     std::string ref;

@@ -20,6 +20,12 @@
 
 #include "../models/Extra.h"
 
+/**
+ * @brief ConstructorsHash class
+ * 
+ * @tparam Key class
+ * @tparam Value class
+ */
 template<class Key, class Value>
 class ConstructorsHash {
 private:
@@ -50,6 +56,15 @@ public:
     std::string toString();
 };
 
+/**
+ * @brief Construct a new Constructors Hash< Key,  Value>:: Constructors Hash object
+ * 
+ * @tparam Key class
+ * @tparam Value class
+ * @param size The size of the hash
+ * @param initialValue Initial value of the hash
+ * @param func Function to hash the keys
+ */
 template<class Key, class Value>
 ConstructorsHash<Key, Value>::ConstructorsHash(unsigned int size, Key initialValue, unsigned int (*func)(const Key)) {
     this->size = size;
@@ -68,6 +83,12 @@ ConstructorsHash<Key, Value>::ConstructorsHash(unsigned int size, Key initialVal
     this->count = 0;
 }
 
+/**
+ * @brief Destroy the Constructors Hash< Key,  Value>:: Constructors Hash object
+ * 
+ * @tparam Key 
+ * @tparam Value 
+ */
 template<class Key, class Value>
 ConstructorsHash<Key, Value>::~ConstructorsHash() {
     delete[] keys;
@@ -79,11 +100,27 @@ ConstructorsHash<Key, Value>::~ConstructorsHash() {
     count = 0;
 }
 
+/**
+ * @brief Check if the hash is full
+ * 
+ * @tparam Key 
+ * @tparam Value 
+ * @return true 
+ * @return false 
+ */
 template<class Key, class Value>
 bool ConstructorsHash<Key, Value>::full() const {
     return count > size;
 }
 
+/**
+ * @brief Get the index of the key
+ * 
+ * @tparam Key 
+ * @tparam Value 
+ * @param key 
+ * @return long 
+ */
 template<class Key, class Value>
 long ConstructorsHash<Key, Value>::indexOf(const Key key) const {
     unsigned int i, start;
@@ -95,6 +132,16 @@ long ConstructorsHash<Key, Value>::indexOf(const Key key) const {
     return -1;
 }
 
+/**
+ * @brief Put the key and value in the hash
+ * 
+ * @tparam Key 
+ * @tparam Value 
+ * @param key 
+ * @param value 
+ * @return true 
+ * @return false 
+ */
 template<class Key, class Value>
 bool ConstructorsHash<Key, Value>::put(Key key, Value value) {
     unsigned int i, start;
@@ -116,6 +163,14 @@ bool ConstructorsHash<Key, Value>::put(Key key, Value value) {
     return false;
 }
 
+/**
+ * @brief Get the value of the key
+ * 
+ * @tparam Key 
+ * @tparam Value 
+ * @param key 
+ * @return Value 
+ */
 template<class Key, class Value>
 Value ConstructorsHash<Key, Value>::get(const Key key) {
     long int position = indexOf(key);
@@ -123,11 +178,27 @@ Value ConstructorsHash<Key, Value>::get(const Key key) {
     return 0;
 }
 
+/**
+ * @brief Check if the key is in the hash
+ * 
+ * @tparam Key 
+ * @tparam Value 
+ * @param key 
+ * @return true 
+ * @return false 
+ */
 template<class Key, class Value>
 bool ConstructorsHash<Key, Value>::contains(Key key) const {
     return indexOf(key) != -1;
 }
 
+/**
+ * @brief Convert the hash to a string
+ * 
+ * @tparam Key 
+ * @tparam Value 
+ * @return std::string 
+ */
 template<class Key, class Value>
 std::string ConstructorsHash<Key, Value>::toString() {
     std::stringstream aux;

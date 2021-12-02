@@ -17,6 +17,9 @@
 
 #include "../models/Extra.h"
 
+/**
+ * @brief The Sorts class
+ */
 class Sorts {
 private:
     void mergeSplit(std::vector<LapTime> &, std::vector<LapTime> &, int, int);
@@ -29,11 +32,24 @@ public:
     void mergeSort(std::vector<LapTime> &);
 };
 
+/**
+ * @brief Merge sort algorithm for a vector of LapTimes
+ * 
+ * @param v 
+ */
 void Sorts::mergeSort(std::vector<LapTime> &v) {
     std::vector<LapTime> temp(v.size());
     mergeSplit(v, temp, 0, v.size() - 1);
 }
 
+/**
+ * @brief Merge sort helper function
+ * 
+ * @param A 
+ * @param B 
+ * @param low 
+ * @param high 
+ */
 void Sorts::mergeSplit(std::vector<LapTime> &A, std::vector<LapTime> &B, int low, int high) {
     if ((high - low) < 1) return;
     int mid = (high + low) / 2;
@@ -43,6 +59,15 @@ void Sorts::mergeSplit(std::vector<LapTime> &A, std::vector<LapTime> &B, int low
     copyArray(A, B, low, high);
 }
 
+/**
+ * @brief Function that merges two arrays
+ * 
+ * @param A 
+ * @param B 
+ * @param low 
+ * @param mid 
+ * @param high 
+ */
 void Sorts::mergeArray(std::vector<LapTime> &A, std::vector<LapTime> &B, int low, int mid, int high) {
     int i = low, j = mid + 1, k = low;
     while (i <= mid && j <= high) {
@@ -68,6 +93,14 @@ void Sorts::mergeArray(std::vector<LapTime> &A, std::vector<LapTime> &B, int low
     }
 }
 
+/**
+ * @brief Copy the elements of B into A
+ * 
+ * @param A 
+ * @param B 
+ * @param low 
+ * @param high 
+ */
 void Sorts::copyArray(std::vector<LapTime> &A, std::vector<LapTime> &B, int low, int high) {
     for (int i = low; i <= high; ++i) {
         A[i] = B[i];

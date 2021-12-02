@@ -19,6 +19,10 @@
 
 class CircuitsAVL;
 
+/**
+ * @brief Node class.
+ * 
+ */
 class Node {
 private:
     Circuit value;
@@ -61,12 +65,31 @@ public:
     friend class CircuitsAVL;
 };
 
+/**
+ * @brief Construct a new Node:: Node object
+ * 
+ * @param circuit 
+ */
 Node::Node(Circuit circuit) : value(std::move(circuit)), left(nullptr), right(nullptr), level(0), balance(0) {}
 
+/**
+ * @brief Construct a new Node:: Node object
+ * 
+ * @param circuit Circuit to add. 
+ * @param le Left child.
+ * @param ri Right child.
+ * @param lvl Level.
+ * @param bal Balance.
+ */
 Node::Node(Circuit circuit, Node *le, Node *ri, int lvl, int bal) : value(std::move(circuit)), left(le), right(ri),
                                                                     level(lvl),
                                                                     balance(bal) {}
 
+/**
+ * @brief Add a new circuit to the tree.
+ * 
+ * @param circuit 
+ */
 void Node::add(const Circuit &circuit) {
     if (circuit.circuitId < value.circuitId) {
         if (left != nullptr) {
@@ -83,6 +106,13 @@ void Node::add(const Circuit &circuit) {
     }
 }
 
+/**
+ * @brief Find a circuit in the tree.
+ * 
+ * @param id 
+ * @return true 
+ * @return false 
+ */
 bool Node::find(int id) {
     if (id == value.circuitId) {
         return true;
@@ -94,6 +124,11 @@ bool Node::find(int id) {
     return false;
 }
 
+/**
+ * @brief Get the predecesor of the node.
+ * 
+ * @return Node* 
+ */
 Node *Node::predecesor() {
     Node *le, *ri;
     le = left;
@@ -124,6 +159,11 @@ Node *Node::predecesor() {
     return child;
 }
 
+/**
+ * @brief Remove a circuit from the tree.
+ * 
+ * @param id 
+ */
 void Node::remove(int id) {
     Node *succ, *old;
     if (id < value.circuitId) {
@@ -159,6 +199,10 @@ void Node::remove(int id) {
     }
 }
 
+/**
+ * @brief Remove all the childs of the node.
+ * 
+ */
 void Node::removeChilds() {
     if (left != nullptr) {
         left->removeChilds();
@@ -172,6 +216,13 @@ void Node::removeChilds() {
     }
 }
 
+/**
+ * @brief Inorder traversal of the tree.
+ * 
+ * @param aux 
+ * @param count 
+ * @param counter 
+ */
 void Node::inorder(std::stringstream &aux, int &count, int &counter) const {
     if (count <= 0) return;
     if (left != nullptr) left->inorder(aux, count, counter);
@@ -185,6 +236,11 @@ void Node::inorder(std::stringstream &aux, int &count, int &counter) const {
     if (right != nullptr) right->inorder(aux, count, counter);
 }
 
+/**
+ * @brief Preorder traversal of the tree.
+ * 
+ * @param aux 
+ */
 void Node::preorder(std::stringstream &aux) const {
     aux << "(" << value.name << " " << level << " " << balance << ")";
     if (left != nullptr) {
@@ -197,6 +253,11 @@ void Node::preorder(std::stringstream &aux) const {
     }
 }
 
+/**
+ * @brief Get the max depth of the tree.
+ * 
+ * @return int 
+ */
 int Node::max_depth() {
     int le = 0, ri = 0;
     if (left != nullptr)
@@ -211,6 +272,14 @@ int Node::max_depth() {
     return level;
 }
 
+/**
+ * @brief Balance the tree if needed.
+ * 
+ * @param circuit 
+ * @param parent 
+ * @param checked 
+ * @return Node* 
+ */
 Node *Node::check_tree(Circuit *circuit, Node *parent, bool *checked) {
     Node *le = nullptr, *ri = nullptr, *a = nullptr;
     if (left != nullptr)
@@ -237,6 +306,11 @@ Node *Node::check_tree(Circuit *circuit, Node *parent, bool *checked) {
     return a;
 }
 
+/**
+ * @brief Balance the tree.
+ * 
+ * @return Node* 
+ */
 Node *Node::balance_tree() {
     Node *a = this, *le = left, *ri = right;
     if (balance > 0) {
@@ -255,6 +329,12 @@ Node *Node::balance_tree() {
     return a;
 }
 
+/**
+ * @brief Rotate the tree to the left.
+ * 
+ * @param a 
+ * @return Node* 
+ */
 Node *Node::rot_left(Node *a) {
     Node *b, *temp = nullptr;
     if (a->right != nullptr) {
@@ -271,6 +351,12 @@ Node *Node::rot_left(Node *a) {
     return b;
 }
 
+/**
+ * @brief Rotate the tree to the right.
+ * 
+ * @param a 
+ * @return Node* 
+ */
 Node *Node::rot_right(Node *a) {
     Node *b, *temp = nullptr;
     if (a->left != nullptr) {
@@ -287,18 +373,34 @@ Node *Node::rot_right(Node *a) {
     return b;
 }
 
+/**
+ * @brief Rotate the tree to the left and then to the right.
+ * 
+ * @param a 
+ * @return Node* 
+ */
 Node *Node::rot_left_right(Node *a) {
     a->left = rot_left(a->left);
     a = rot_right(a);
     return a;
 }
 
+/**
+ * @brief Rotate the tree to the right and then to the left.
+ * 
+ * @param a 
+ * @return Node* 
+ */
 Node *Node::rot_right_left(Node *a) {
     a->right = rot_right(a->right);
     a = rot_left(a);
     return a;
 }
 
+/**
+ * @brief CircuitsAVL class.
+ * 
+ */
 class CircuitsAVL {
 private:
     Node *root;
@@ -323,16 +425,35 @@ public:
     std::string preorder() const;
 };
 
+/**
+ * @brief Construct a new Circuits AVL:: Circuits AVL object
+ * 
+ */
 CircuitsAVL::CircuitsAVL() : root(nullptr), size(0) {}
 
+/**
+ * @brief Destroy the Circuits AVL:: Circuits AVL object
+ * 
+ */
 CircuitsAVL::~CircuitsAVL() {
     removeAll();
 }
 
+/**
+ * @brief Check if the tree is empty.
+ * 
+ * @return true The tree is empty.
+ * @return false The tree is not empty.
+ */
 bool CircuitsAVL::empty() const {
     return root == nullptr;
 }
 
+/**
+ * @brief Add a new circuit to the tree.
+ * 
+ * @param circuit 
+ */
 void CircuitsAVL::add(const Circuit &circuit) {
     if (!empty()) {
         if (!root->find(circuit.circuitId)) {
@@ -353,6 +474,13 @@ void CircuitsAVL::add(const Circuit &circuit) {
     size++;
 }
 
+/**
+ * @brief Find a circuit in the tree.
+ * 
+ * @param id 
+ * @return true 
+ * @return false 
+ */
 bool CircuitsAVL::find(int id) const {
     if (!empty()) {
         return root->find(id);
@@ -361,6 +489,11 @@ bool CircuitsAVL::find(int id) const {
     }
 }
 
+/**
+ * @brief Remove a circuit from the tree.
+ * 
+ * @param id 
+ */
 void CircuitsAVL::remove(int id) {
     if (!empty()) {
         if (id == root->value.circuitId) {
@@ -386,6 +519,10 @@ void CircuitsAVL::remove(int id) {
     }
 }
 
+/**
+ * @brief Remove all the circuits from the tree.
+ * 
+ */
 void CircuitsAVL::removeAll() {
     if (!empty()) {
         root->removeChilds();
@@ -394,6 +531,12 @@ void CircuitsAVL::removeAll() {
     root = nullptr;
 }
 
+/**
+ * @brief Get the inorder string.
+ * 
+ * @param count 
+ * @return std::string 
+ */
 std::string CircuitsAVL::inorder(int count) const {
     if (count > size) {
         std::cout << "[!] No existen tantos circuitos para imprimir. (Max: " << size << ")" << std::endl;
@@ -407,6 +550,11 @@ std::string CircuitsAVL::inorder(int count) const {
     return aux.str();
 }
 
+/**
+ * @brief Get the preorder string.
+ * 
+ * @return std::string 
+ */
 std::string CircuitsAVL::preorder() const {
     std::stringstream aux;
     aux << "[";

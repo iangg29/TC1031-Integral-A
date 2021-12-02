@@ -22,11 +22,17 @@
 #include "models/Extra.h"
 #include "helpers/Sorts.h"
 
+/**
+ * @brief Type of Integral application.
+ */
 enum class IntegralType {
     A,
     B
 };
 
+/**
+ * @brief Application class.
+ */
 class Application {
 private:
     std::string name;
@@ -90,6 +96,13 @@ public:
     ConstructorsHash<std::string, std::string> *getConstructors() const;
 };
 
+/**
+ * @brief Construct a new Application:: Application object
+ * 
+ * @param name Name of the application.
+ * @param version Version of the application.
+ * @param debug Debug mode.
+ */
 Application::Application(const std::string &name, float version, bool debug) {
     this->name = name;
     this->version = version;
@@ -115,6 +128,10 @@ Application::Application(const std::string &name, float version, bool debug) {
     }
 }
 
+/**
+ * @brief Destroy the Application:: Application object
+ * 
+ */
 Application::~Application() {
     delete list;
     delete circuits;
@@ -123,6 +140,10 @@ Application::~Application() {
     delete constructors;
 }
 
+/**
+ * @brief Initial method of the application.
+ * 
+ */
 void Application::init() {
     setStarted(true);
     log("--------------");
@@ -136,22 +157,47 @@ void Application::init() {
     launchCLI();
 }
 
+/**
+ * @brief Get the name of the application.
+ * 
+ * @return const std::string& 
+ */
 const std::string &Application::getName() const {
     return this->name;
 }
 
+/**
+ * @brief Get the version of the application.
+ * 
+ * @return float 
+ */
 float Application::getVersion() const {
     return this->version;
 }
 
+/**
+ * @brief Get the debug mode.
+ * 
+ * @return true Application is in debug mode.
+ * @return false Application is not in debug mode.
+ */
 bool Application::isDebug() const {
     return this->debug;
 }
 
+/**
+ * @brief Log a message.
+ * 
+ * @param message Message to log.
+ */
 void Application::log(const std::string &message) {
     std::cout << "[*] " << message << std::endl;
 }
 
+/**
+ * @brief Display the menu deppending on the application type.
+ * 
+ */
 void Application::menu() {
     log("---- MENU ----");
     log("Selecciona una opción:");
@@ -169,6 +215,10 @@ void Application::menu() {
     log("--------------");
 }
 
+/**
+ * @brief Launch the CLI.
+ * 
+ */
 void Application::launchCLI() {
     if (!isDataLoaded()) log("Data hasn't been loaded completely yet.");
     int option;
@@ -260,14 +310,29 @@ void Application::launchCLI() {
     } while (isStarted() && isDataLoaded());
 }
 
+/**
+ * @brief Check if the data has been loaded.
+ * 
+ * @return true Data has been loaded.
+ * @return false Data hasn't been loaded.
+ */
 bool Application::isDataLoaded() const {
     return this->dataLoaded;
 }
 
+/**
+ * @brief Set the data loaded.
+ * 
+ * @param loaded Data loaded.
+ */
 void Application::setDataLoaded(bool loaded) {
     Application::dataLoaded = loaded;
 }
 
+/**
+ * @brief Load the data.
+ * 
+ */
 void Application::loadData() {
     LapTimesFile lapTimesFile("./data/lap_times.csv");
     CircuitsFile circuitsFile("./data/circuits.csv");
@@ -282,14 +347,29 @@ void Application::loadData() {
     setDataLoaded(true);
 }
 
+/**
+ * @brief Check if application has started.
+ * 
+ * @return true
+ * @return false 
+ */
 bool Application::isStarted() const {
     return started;
 }
 
+/**
+ * @brief Set the application started.
+ * 
+ * @param appStarted 
+ */
 void Application::setStarted(bool appStarted) {
     Application::started = appStarted;
 }
 
+/**
+ * @brief Application end method.
+ * 
+ */
 void Application::end() {
     list->clear();
     circuits->removeAll();
@@ -299,26 +379,57 @@ void Application::end() {
     setStarted(false);
 }
 
+/**
+ * @brief Get the LapTime list.
+ * 
+ * @return LapTimeList* 
+ */
 LapTimeList *Application::getList() const {
     return list;
 }
 
+/**
+ * @brief Get the Circuits AVL.
+ * 
+ * @return CircuitsAVL* 
+ */
 CircuitsAVL *Application::getCircuits() const {
     return circuits;
 }
 
+/**
+ * @brief Get the Drivers BST.
+ * 
+ * @return DriversBST* 
+ */
 DriversBST *Application::getDrivers() const {
     return drivers;
 }
 
+/**
+ * @brief Get the integral type.
+ * 
+ * @return IntegralType 
+ */
 IntegralType Application::getIntegralType() {
     return integralType;
 }
 
+/**
+ * @brief Get the Races list.
+ * 
+ * @return RacesList* 
+ */
 RacesList *Application::getRaces() const {
     return races;
 }
 
+/**
+ * @brief Assert result for testing.
+ * 
+ * @param result Result obtained.
+ * @param expected Expected answer.
+ */
 void Application::assertResult(std::string &result, std::string &expected) {
     if (expected == result) {
         log("[RESULT] SUCCESS");
@@ -331,10 +442,19 @@ void Application::assertResult(std::string &result, std::string &expected) {
     }
 }
 
+/**
+ * @brief Get the Constructors hash.
+ * 
+ * @return ConstructorsHash<std::string, std::string>* 
+ */
 ConstructorsHash<std::string, std::string> *Application::getConstructors() const {
     return constructors;
 }
 
+/**
+ * @brief Run automated tests.
+ * 
+ */
 void Application::runTests() {
     unsigned int startTime, finishTime;
     startTime = std::chrono::duration_cast<std::chrono::milliseconds>(
