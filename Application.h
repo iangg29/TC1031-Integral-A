@@ -206,15 +206,15 @@ void Application::menu() {
     log("---- MENU ----");
     log("Selecciona una opción:");
     if (getIntegralType() == IntegralType::A) {
-        log("1. Tiempos de vuelta");
-        log("2. Carreras");
-        log("3. Pilotos");
+        log("1. Tiempos de vuelta (DList & Sorting)");
+        log("2. Carreras (List)");
+        log("3. Pilotos (BST)");
     } else {
-        log("1. Circuitos");
-        log("2. Escuderías");
-        log("3. Grafos");
+        log("1. Circuitos (AVL)");
+        log("2. Escuderías (HASH)");
+        log("3. Viajes entre circuitos (Graphs)");
     }
-    log("4. Run automated tests");
+    log("4. Run automated tests (All structures)");
     log("5. Salir");
     log("--------------");
 }
@@ -304,15 +304,12 @@ void Application::launchCLI() {
                     for (int i = 1; i < circuitos.size(); i++) {
                         std::cout << i << " " << circuitos[i].name << std::endl;
                     }
-
                     log("Ingrese el numero de su circuito actual:");
                     std::cin >> inicio;
                     std::cout << "Se encuentra en: " << circuitos[inicio].name << std::endl;
-                    log("Ingrese el pasillo al que desea ir:");
+                    log("Ingrese el circuito al que desea ir:");
                     std::cin >> final;
-
                     std::cout << "Desea ir a: " << circuitos[final].name << std::endl;
-
                     std::cout << "Utilice el siguiente camino: " << getGraph()->DFS(inicio, final, circuitos)
                               << std::endl;
                     break;
@@ -501,17 +498,24 @@ void Application::runTests() {
     }
     expected = "[\"Sakhir Grand Prix\"] x [\"RUS\"] \"0:55.404\"\n[\"Sakhir Grand Prix\"] x [\"RUS\"] \"0:56.319\"\n[\"Sakhir Grand Prix\"] x [\"RUS\"] \"0:56.393\"\n[\"Sakhir Grand Prix\"] x [\"RUS\"] \"0:56.442\"\n[\"Sakhir Grand Prix\"] x [\"RUS\"] \"0:56.499\"\n";
     assertResult(result, expected);
+    std::cout << std::endl;
     log("-- Estructuras lineales");
     result = getRaces()->toString(5);
     expected = "1. \"Australian Grand Prix\" (2009)\n2. \"Malaysian Grand Prix\" (2009)\n3. \"Chinese Grand Prix\" (2009)\n4. \"Bahrain Grand Prix\" (2009)\n5. \"Spanish Grand Prix\" (2009)\n";
     assertResult(result, expected);
+    std::cout << std::endl;
     log("-- Árboles");
     result = getDrivers()->inorder(5);
     expected = "\n1. \"Lewis\" \"Hamilton\" [\"HAM\"] #44\n2. \"Nick\" \"Heidfeld\" [\"HEI\"]\n3. \"Nico\" \"Rosberg\" [\"ROS\"] #6\n4. \"Fernando\" \"Alonso\" [\"ALO\"] #14\n5. \"Heikki\" \"Kovalainen\" [\"KOV\"]";
     assertResult(result, expected);
+    std::cout << std::endl;
     log("[!] INTEGRAL B");
     log("-- Grafos");
-    // TODO: Graphs test cases.
+    std::vector<Circuit> circuitos = getCircuits()->toVec();
+    result = getGraph()->DFS(16, 12, circuitos);
+    expected = "\"americas\" \"spa\"  \"sochi\" \"imola\" \"rodriguez\"";
+    assertResult(result, expected);
+    std::cout << std::endl;
     log("-- Hashes");
     result = getConstructors()->get("\"mercedes\"");
     expected = "\"http://en.wikipedia.org/wiki/Mercedes-Benz_in_Formula_One\"";
@@ -519,6 +523,7 @@ void Application::runTests() {
     result = getConstructors()->get("\"red_bull\"");
     expected = "\"http://en.wikipedia.org/wiki/Red_Bull_Racing\"";
     assertResult(result, expected);
+    std::cout << std::endl;
     log("-- AVL");
     result = getCircuits()->inorder(5);
     expected = "\n1. \"Albert Park Grand Prix Circuit\" (\"Melbourne\", \"Australia\")\n2. \"Sepang International Circuit\" (\"Kuala Lumpur\", \"Malaysia\")\n3. \"Bahrain International Circuit\" (\"Sakhir\", \"Bahrain\")\n4. \"Circuit de Barcelona-Catalunya\" (\"Montmeló\", \"Spain\")\n5. \"Istanbul Park\" (\"Istanbul\", \"Turkey\")";
@@ -530,6 +535,9 @@ void Application::runTests() {
     std::cout << std::endl;
 }
 
+/**
+ * @brief Obtains circuits graph.
+ * */
 Graph *Application::getGraph() const {
     return graph;
 }
