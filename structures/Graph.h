@@ -22,7 +22,10 @@
 #include <string>
 #include <list>
 
-
+/**
+ * @brief The Graph class
+ * 
+ */
 class Graph {
 private:
     int edgesList;
@@ -34,8 +37,6 @@ private:
 
 public:
     Graph();
-
-    std::string printAdjList();
 
     explicit Graph(int);
 
@@ -49,20 +50,34 @@ public:
 
     bool contains(std::list<int>, int);
 
-    void sortAdjList();
 };
 
+/**
+ * @brief Construct a new Graph:: Graph object
+ * 
+ */
 Graph::Graph() {
     edgesList = nodes = 0;
     adjList = {};
 }
 
+/**
+ * @brief Construct a new Graph:: Graph object
+ * 
+ * @param n Number of nodes
+ */
 Graph::Graph(int n) {
     nodes = n;
     adjList = new std::vector<int>[nodes];
     edgesList = 0;
 }
 
+/**
+ * @brief Loads a graph from a file
+ * 
+ * @param file_name Name of the file
+ * @param a Number of nodes
+ */
 void Graph::loadGraphList(const std::string &file_name, int a) {
     nodes = a;
     adjList = new std::vector<int>[nodes];
@@ -89,12 +104,26 @@ void Graph::loadGraphList(const std::string &file_name, int a) {
     }
 }
 
+/**
+ * @brief Adds an edge to the graph
+ * 
+ * @param u
+ * @param v 
+ */
 void Graph::addEdgeList(int u, int v) {
     adjList[u].push_back(v);
     adjList[v].push_back(u);
     edgesList++;
 }
 
+/**
+ * @brief Depth First Search algorithm
+ * 
+ * @param start Starting node
+ * @param goal Goal node
+ * @param path Circuits available
+ * @return std::string 
+ */
 std::string Graph::DFS(int start, int goal, std::vector<Circuit> &path) {
     std::stringstream aux;
     std::stack<int> st;
@@ -106,6 +135,17 @@ std::string Graph::DFS(int start, int goal, std::vector<Circuit> &path) {
     return aux.str();
 }
 
+/**
+ * @brief Helper function for DFS
+ * 
+ * @param current Current node
+ * @param goal Goal node
+ * @param st Stack
+ * @param visited Node visited
+ * @param paths Paths
+ * @param aux Node visited in string format
+ * @param path Circuits available
+ */
 void Graph::dfsHelper(int current, int goal, std::stack<int> &st, std::list<int> &visited,
                       std::vector<std::vector<int>> &paths, std::stringstream &aux,
                       std::vector<Circuit> path) {
@@ -128,6 +168,15 @@ void Graph::dfsHelper(int current, int goal, std::stack<int> &st, std::list<int>
     }
 }
 
+/**
+ * @brief Prints the path
+ * 
+ * @param paths Paths
+ * @param start Starting node
+ * @param goal Goal node
+ * @param aux Auxiliar string
+ * @param path Circuits available
+ */
 void Graph::printPath(std::vector<std::vector<int>> &paths, int start, int goal, std::stringstream &aux,
                       std::vector<Circuit> &path) {
     int node = paths[goal][0];
@@ -148,6 +197,14 @@ void Graph::printPath(std::vector<std::vector<int>> &paths, int start, int goal,
     }
 }
 
+/**
+ * @brief Checks if a list contains a node
+ * 
+ * @param lista 
+ * @param node 
+ * @return true 
+ * @return false 
+ */
 bool Graph::contains(std::list<int> lista, int node) {
     std::list<int>::iterator it;
     it = std::find(lista.begin(), lista.end(), node);
@@ -155,27 +212,6 @@ bool Graph::contains(std::list<int> lista, int node) {
         return true;
     } else {
         return false;
-    }
-}
-
-std::string Graph::printAdjList() {
-    sortAdjList();
-    std::stringstream aux;
-    for (int i = 0; i < nodes; i++) {
-        aux << "vertex "
-            << i << " :";
-        for (int j: adjList[i]) {
-            aux << " " << j;
-        }
-        aux << " ";
-    }
-    return aux.str();
-
-}
-
-void Graph::sortAdjList() {
-    for (int i = 0; i < nodes; i++) {
-        sort(adjList[i].begin(), adjList[i].end());
     }
 }
 

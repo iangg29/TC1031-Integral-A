@@ -446,8 +446,24 @@ RacesList *Application::getRaces() const {
 }
 
 /**
- * @brief Assert result for testing.
+ * @brief Get the Constructors hash.
  * 
+ * @return ConstructorsHash<std::string, std::string>* 
+ */
+ConstructorsHash<std::string, std::string> *Application::getConstructors() const {
+    return constructors;
+}
+
+/**
+ * @brief Obtains circuits graph.
+ * */
+Graph *Application::getGraph() const {
+    return graph;
+}
+
+/**
+ * @brief Assert result for testing.
+ *
  * @param result Result obtained.
  * @param expected Expected answer.
  */
@@ -461,15 +477,6 @@ void Application::assertResult(std::string &result, std::string &expected) {
         std::cout << "[DEBUG] ESPERADA:" << std::endl << expected << std::endl;
         std::cout << "[DEBUG] PROGRAMA:" << std::endl << result << std::endl;
     }
-}
-
-/**
- * @brief Get the Constructors hash.
- * 
- * @return ConstructorsHash<std::string, std::string>* 
- */
-ConstructorsHash<std::string, std::string> *Application::getConstructors() const {
-    return constructors;
 }
 
 /**
@@ -535,11 +542,5 @@ void Application::runTests() {
     std::cout << std::endl;
 }
 
-/**
- * @brief Obtains circuits graph.
- * */
-Graph *Application::getGraph() const {
-    return graph;
-}
 
 #endif  //INTEGRALA_APPLICATION_H

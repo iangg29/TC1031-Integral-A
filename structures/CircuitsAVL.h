@@ -13,6 +13,7 @@
 #ifndef INTEGRALA_CIRCUITS_AVL_H
 #define INTEGRALA_CIRCUITS_AVL_H
 
+#include <sstream>
 #include <utility>
 
 #include "../models/Extra.h"
