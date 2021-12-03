@@ -13,21 +13,23 @@
 #ifndef INTEGRALA_GRAPH_H
 #define INTEGRALA_GRAPH_H
 
-#include <iostream>
+#include <algorithm>
+#include <cstdio>
 #include <fstream>
+#include <iostream>
+#include <list>
 #include <sstream>
-#include <utility>
-#include <vector>
 #include <stack>
 #include <string>
-#include <list>
+#include <utility>
+#include <vector>
 
 /**
  * @brief The Graph class
- * 
+ *
  */
 class Graph {
-private:
+   private:
     int edgesList;
     int nodes;
     std::vector<int> *adjList;
@@ -35,7 +37,7 @@ private:
     void dfsHelper(int, int, std::stack<int> &, std::list<int> &, std::vector<std::vector<int>> &, std::stringstream &,
                    std::vector<Circuit>);
 
-public:
+   public:
     Graph();
 
     explicit Graph(int);
@@ -49,12 +51,11 @@ public:
     static void printPath(std::vector<std::vector<int>> &, int, int, std::stringstream &, std::vector<Circuit> &);
 
     bool contains(std::list<int>, int);
-
 };
 
 /**
  * @brief Construct a new Graph:: Graph object
- * 
+ *
  */
 Graph::Graph() {
     edgesList = nodes = 0;
@@ -63,7 +64,7 @@ Graph::Graph() {
 
 /**
  * @brief Construct a new Graph:: Graph object
- * 
+ *
  * @param n Number of nodes
  */
 Graph::Graph(int n) {
@@ -74,7 +75,7 @@ Graph::Graph(int n) {
 
 /**
  * @brief Loads a graph from a file
- * 
+ *
  * @param file_name Name of the file
  * @param a Number of nodes
  */
@@ -106,9 +107,9 @@ void Graph::loadGraphList(const std::string &file_name, int a) {
 
 /**
  * @brief Adds an edge to the graph
- * 
+ *
  * @param u
- * @param v 
+ * @param v
  */
 void Graph::addEdgeList(int u, int v) {
     adjList[u].push_back(v);
@@ -118,37 +119,37 @@ void Graph::addEdgeList(int u, int v) {
 
 /**
  * @brief Depth First Search algorithm
- * 
+ *
  * @param start Starting node
  * @param goal Goal node
- * @param path Circuits available
- * @return std::string 
+ * @param circuits Circuits available
+ * @return std::string
  */
-std::string Graph::DFS(int start, int goal, std::vector<Circuit> &path) {
+std::string Graph::DFS(int start, int goal, std::vector<Circuit> &circuits) {
     std::stringstream aux;
     std::stack<int> st;
     std::list<int> visited;
     std::vector<std::vector<int>> paths(nodes, std::vector<int>(1, -1));
     st.push(start);
-    dfsHelper(start, goal, st, visited, paths, aux, path);
-    printPath(paths, start, goal, aux, path);
+    dfsHelper(start, goal, st, visited, paths, aux, circuits);
+    printPath(paths, start, goal, aux, circuits);
     return aux.str();
 }
 
 /**
  * @brief Helper function for DFS
- * 
+ *
  * @param current Current node
  * @param goal Goal node
  * @param st Stack
  * @param visited Node visited
  * @param paths Paths
  * @param aux Node visited in string format
- * @param path Circuits available
+ * @param circuits Circuits available
  */
 void Graph::dfsHelper(int current, int goal, std::stack<int> &st, std::list<int> &visited,
                       std::vector<std::vector<int>> &paths, std::stringstream &aux,
-                      std::vector<Circuit> path) {
+                      std::vector<Circuit> circuits) {
     if (current == goal) {
         return;
     } else if (st.empty()) {
@@ -164,13 +165,13 @@ void Graph::dfsHelper(int current, int goal, std::stack<int> &st, std::list<int>
                 paths[adjList[current][i]][0] = current;
             }
         }
-        dfsHelper(current, goal, st, visited, paths, aux, std::move(path));
+        dfsHelper(current, goal, st, visited, paths, aux, circuits);
     }
 }
 
 /**
  * @brief Prints the path
- * 
+ *
  * @param paths Paths
  * @param start Starting node
  * @param goal Goal node
@@ -178,7 +179,7 @@ void Graph::dfsHelper(int current, int goal, std::stack<int> &st, std::list<int>
  * @param path Circuits available
  */
 void Graph::printPath(std::vector<std::vector<int>> &paths, int start, int goal, std::stringstream &aux,
-                      std::vector<Circuit> &path) {
+                      std::vector<Circuit> &circuits) {
     int node = paths[goal][0];
     std::stack<int> reverse;
     reverse.push(goal);
@@ -186,10 +187,9 @@ void Graph::printPath(std::vector<std::vector<int>> &paths, int start, int goal,
         reverse.push(node);
         node = paths[node][0];
     }
-
     reverse.push(start);
     while (!reverse.empty()) {
-        aux << path[reverse.top()].ref;
+        aux << circuits[reverse.top()].ref;
         reverse.pop();
         if (!reverse.empty()) {
             aux << " ";
@@ -199,11 +199,11 @@ void Graph::printPath(std::vector<std::vector<int>> &paths, int start, int goal,
 
 /**
  * @brief Checks if a list contains a node
- * 
- * @param lista 
- * @param node 
- * @return true 
- * @return false 
+ *
+ * @param lista
+ * @param node
+ * @return true
+ * @return false
  */
 bool Graph::contains(std::list<int> lista, int node) {
     std::list<int>::iterator it;
@@ -215,5 +215,4 @@ bool Graph::contains(std::list<int> lista, int node) {
     }
 }
 
-
-#endif //INTEGRALA_GRAPH_H
+#endif  // INTEGRALA_GRAPH_H

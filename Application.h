@@ -13,14 +13,14 @@
 #ifndef INTEGRALA_APPLICATION_H
 #define INTEGRALA_APPLICATION_H
 
+#include <chrono>
 #include <fstream>
 #include <limits>
 #include <string>
-#include <chrono>
 
 #include "CSVFile.h"
-#include "models/Extra.h"
 #include "helpers/Sorts.h"
+#include "models/Extra.h"
 
 /**
  * @brief Type of Integral application.
@@ -34,7 +34,7 @@ enum class IntegralType {
  * @brief Application class.
  */
 class Application {
-private:
+   private:
     std::string name;
     float version;
     bool debug;
@@ -61,7 +61,7 @@ private:
 
     void assertResult(std::string &, std::string &);
 
-public:
+   public:
     Application(const std::string &, float, bool);
 
     ~Application();
@@ -101,7 +101,7 @@ public:
 
 /**
  * @brief Construct a new Application:: Application object
- * 
+ *
  * @param name Name of the application.
  * @param version Version of the application.
  * @param debug Debug mode.
@@ -133,7 +133,7 @@ Application::Application(const std::string &name, float version, bool debug) {
 
 /**
  * @brief Destroy the Application:: Application object
- * 
+ *
  */
 Application::~Application() {
     delete list;
@@ -146,7 +146,7 @@ Application::~Application() {
 
 /**
  * @brief Initial method of the application.
- * 
+ *
  */
 void Application::init() {
     setStarted(true);
@@ -163,8 +163,8 @@ void Application::init() {
 
 /**
  * @brief Get the name of the application.
- * 
- * @return const std::string& 
+ *
+ * @return const std::string&
  */
 const std::string &Application::getName() const {
     return this->name;
@@ -172,8 +172,8 @@ const std::string &Application::getName() const {
 
 /**
  * @brief Get the version of the application.
- * 
- * @return float 
+ *
+ * @return float
  */
 float Application::getVersion() const {
     return this->version;
@@ -181,7 +181,7 @@ float Application::getVersion() const {
 
 /**
  * @brief Get the debug mode.
- * 
+ *
  * @return true Application is in debug mode.
  * @return false Application is not in debug mode.
  */
@@ -191,7 +191,7 @@ bool Application::isDebug() const {
 
 /**
  * @brief Log a message.
- * 
+ *
  * @param message Message to log.
  */
 void Application::log(const std::string &message) {
@@ -200,7 +200,7 @@ void Application::log(const std::string &message) {
 
 /**
  * @brief Display the menu deppending on the application type.
- * 
+ *
  */
 void Application::menu() {
     log("---- MENU ----");
@@ -221,7 +221,7 @@ void Application::menu() {
 
 /**
  * @brief Launch the CLI.
- * 
+ *
  */
 void Application::launchCLI() {
     if (!isDataLoaded()) log("Data hasn't been loaded completely yet.");
@@ -242,7 +242,7 @@ void Application::launchCLI() {
                     std::cin >> count;
                     std::vector<LapTime> laps = getList()->toVec(), cleaned;
                     sort.mergeSort(laps);
-                    for (auto &lap: laps) {
+                    for (auto &lap : laps) {
                         if (lap.time.empty()) continue;
                         cleaned.push_back(lap);
                     }
@@ -331,7 +331,7 @@ void Application::launchCLI() {
 
 /**
  * @brief Check if the data has been loaded.
- * 
+ *
  * @return true Data has been loaded.
  * @return false Data hasn't been loaded.
  */
@@ -341,7 +341,7 @@ bool Application::isDataLoaded() const {
 
 /**
  * @brief Set the data loaded.
- * 
+ *
  * @param loaded Data loaded.
  */
 void Application::setDataLoaded(bool loaded) {
@@ -350,7 +350,7 @@ void Application::setDataLoaded(bool loaded) {
 
 /**
  * @brief Load the data.
- * 
+ *
  */
 void Application::loadData() {
     LapTimesFile lapTimesFile("./data/lap_times.csv");
@@ -370,9 +370,9 @@ void Application::loadData() {
 
 /**
  * @brief Check if application has started.
- * 
+ *
  * @return true
- * @return false 
+ * @return false
  */
 bool Application::isStarted() const {
     return started;
@@ -380,8 +380,8 @@ bool Application::isStarted() const {
 
 /**
  * @brief Set the application started.
- * 
- * @param appStarted 
+ *
+ * @param appStarted
  */
 void Application::setStarted(bool appStarted) {
     Application::started = appStarted;
@@ -389,7 +389,7 @@ void Application::setStarted(bool appStarted) {
 
 /**
  * @brief Application end method.
- * 
+ *
  */
 void Application::end() {
     list->clear();
@@ -402,8 +402,8 @@ void Application::end() {
 
 /**
  * @brief Get the LapTime list.
- * 
- * @return LapTimeList* 
+ *
+ * @return LapTimeList*
  */
 LapTimeList *Application::getList() const {
     return list;
@@ -411,8 +411,8 @@ LapTimeList *Application::getList() const {
 
 /**
  * @brief Get the Circuits AVL.
- * 
- * @return CircuitsAVL* 
+ *
+ * @return CircuitsAVL*
  */
 CircuitsAVL *Application::getCircuits() const {
     return circuits;
@@ -420,8 +420,8 @@ CircuitsAVL *Application::getCircuits() const {
 
 /**
  * @brief Get the Drivers BST.
- * 
- * @return DriversBST* 
+ *
+ * @return DriversBST*
  */
 DriversBST *Application::getDrivers() const {
     return drivers;
@@ -429,8 +429,8 @@ DriversBST *Application::getDrivers() const {
 
 /**
  * @brief Get the integral type.
- * 
- * @return IntegralType 
+ *
+ * @return IntegralType
  */
 IntegralType Application::getIntegralType() {
     return integralType;
@@ -438,8 +438,8 @@ IntegralType Application::getIntegralType() {
 
 /**
  * @brief Get the Races list.
- * 
- * @return RacesList* 
+ *
+ * @return RacesList*
  */
 RacesList *Application::getRaces() const {
     return races;
@@ -447,8 +447,8 @@ RacesList *Application::getRaces() const {
 
 /**
  * @brief Get the Constructors hash.
- * 
- * @return ConstructorsHash<std::string, std::string>* 
+ *
+ * @return ConstructorsHash<std::string, std::string>*
  */
 ConstructorsHash<std::string, std::string> *Application::getConstructors() const {
     return constructors;
@@ -474,19 +474,22 @@ void Application::assertResult(std::string &result, std::string &expected) {
         log("[RESULT] FAILED (Result and Expected do not match).");
     }
     if (isDebug()) {
-        std::cout << "[DEBUG] ESPERADA:" << std::endl << expected << std::endl;
-        std::cout << "[DEBUG] PROGRAMA:" << std::endl << result << std::endl;
+        std::cout << "[DEBUG] ESPERADA:" << std::endl
+                  << expected << std::endl;
+        std::cout << "[DEBUG] PROGRAMA:" << std::endl
+                  << result << std::endl;
     }
 }
 
 /**
  * @brief Run automated tests.
- * 
+ *
  */
 void Application::runTests() {
     unsigned int startTime, finishTime;
     startTime = std::chrono::duration_cast<std::chrono::milliseconds>(
-            std::chrono::system_clock::now().time_since_epoch()).count();
+                    std::chrono::system_clock::now().time_since_epoch())
+                    .count();
     std::cout << std::endl;
     log("Running automated tests...");
     log("[!] INTEGRAL A");
@@ -495,7 +498,7 @@ void Application::runTests() {
     std::vector<LapTime> laps = getList()->toVec(), cleaned;
     Sorts sorts;
     sorts.mergeSort(laps);
-    for (auto &lap: laps) {
+    for (auto &lap : laps) {
         if (lap.time.empty()) continue;
         cleaned.push_back(lap);
     }
@@ -536,11 +539,11 @@ void Application::runTests() {
     expected = "\n1. \"Albert Park Grand Prix Circuit\" (\"Melbourne\", \"Australia\")\n2. \"Sepang International Circuit\" (\"Kuala Lumpur\", \"Malaysia\")\n3. \"Bahrain International Circuit\" (\"Sakhir\", \"Bahrain\")\n4. \"Circuit de Barcelona-Catalunya\" (\"Montmeló\", \"Spain\")\n5. \"Istanbul Park\" (\"Istanbul\", \"Turkey\")";
     assertResult(result, expected);
     finishTime = std::chrono::duration_cast<std::chrono::milliseconds>(
-            std::chrono::system_clock::now().time_since_epoch()).count();
+                     std::chrono::system_clock::now().time_since_epoch())
+                     .count();
     std::cout << "[!] Successfully ran test cases. (Took " << (finishTime - startTime) << " ms)"
               << std::endl;
     std::cout << std::endl;
 }
 
-
-#endif  //INTEGRALA_APPLICATION_H
+#endif  // INTEGRALA_APPLICATION_H
